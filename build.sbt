@@ -1,6 +1,6 @@
 Global / onChangedBuildSource := ReloadOnSourceChanges
-scalaVersion := "3.3.1"
-lazy val riddl_version = "0.40.0"
+scalaVersion := "3.4.2"
+lazy val riddl_version = "0.51.0"
 libraryDependencies ++= Seq(
   "com.ossuminc" %% "riddl-testkit" % riddl_version % "test",
   "com.ossuminc" %% "riddl-hugo" % riddl_version % "test",

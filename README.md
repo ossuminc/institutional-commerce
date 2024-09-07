@@ -1,7 +1,6 @@
-# improving-app-riddl
-RIDDL sources for the Improving.App
+# institutional-commerce
+RIDDL sources for the Institutional Commerce application
 
 # NOTE
 This is very nascent and not ready for consumption except for by the
-team working on it.  Many things will change. The published version
-of this is available at https://docs.improving.app/ 
+team working on it.  Many things will change.
