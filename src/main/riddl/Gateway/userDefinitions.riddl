@@ -1,7 +1,7 @@
 user DemoAdmin is "The person that is administering the demo"
 user DemoMember is "The person that is being enrolled during a demo so they can participate in a scenario"
 user Member is "The person that is being enrolled in the app outside a demo"
-application App is { ??? } briefly "The application the user is using to perform this action"
+context App is { ??? } briefly "The application the user is using to perform this action"
 context GatewayAction is {
  ???
  } briefly "The interface that accepts the request for processing by the backend"

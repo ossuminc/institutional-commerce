@@ -1,4 +1,4 @@
-application UserInterface is {
+context UserInterface is {
   command EstablishOrganization is {
     info: MemberContext.EditableInfo with {
       briefly "Details about an organization required for it to exist. See OrganizationContext.Organization.Info for details."
@@ -103,7 +103,7 @@ application UserInterface is {
   }
 }
 
-application CommandLine is {
+context CommandLine is {
   command StartScenario is {
     json: String
   }

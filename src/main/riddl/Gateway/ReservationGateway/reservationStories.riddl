@@ -6,7 +6,7 @@ epic CreateReservation {
     user ImprovingApp.GatewayAPI.Member wants to "Create a Reservation" so that "a booking is created"
     step from user ImprovingApp.GatewayAPI.Member "provides a ReservationId" to user App
       with { briefly "initial invocation" }
-    step send command EstablishReservation from application App to context GatewayAPI
+    step send command EstablishReservation from context App to context GatewayAPI
       with { briefly "send creation message" }
     step from user GatewayAPI "Create Reservation" to entity ImprovingApp.Events.ReservationContext.Reservation
       with { briefly "create reservation" }
@@ -14,7 +14,7 @@ epic CreateReservation {
       from entity ImprovingApp.Events.ReservationContext.Reservation to source ImprovingApp.Events.ReservationContext.ReservationEventsSource
       with { briefly "reservation created" }
     step send event ImprovingApp.Events.ReservationContext.ReservationEstablished
-      from source ImprovingApp.Events.ReservationContext.ReservationEventsSource to application App
+      from source ImprovingApp.Events.ReservationContext.ReservationEventsSource to context App
   }
 } with {
   by author Alex
