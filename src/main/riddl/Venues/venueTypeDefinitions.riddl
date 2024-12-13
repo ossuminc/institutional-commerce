@@ -1,11 +1,15 @@
-type Status is any of {Draft, Open, Closed} briefly "Internal status of a Venue. Venue must have >= 1 location to be considered Open or Closed"
+type Status is any of {Draft, Open, Closed} with {
+  briefly "Internal status of a Venue. Venue must have >= 1 location to be considered Open or Closed"
+}
 
 type Info is {
-  orgId: OrganizationId briefly "Venues are defined by BaseOrgs. venueId and orgId make a composite key",
+  orgId: OrganizationId with { briefly "Venues are defined by BaseOrgs. venueId and orgId make a composite key" },
   name: String,
   address: Address,
-  isPrivate: Boolean briefly "Is this location accessible outside of the organization owning its venue?
-                              Note: would require a query connecting this value to a projector of all parents and children of orgId"
+  isPrivate: Boolean with {
+    briefly "Is this location accessible outside of the organization owning its venue?"
+    described by "Note: would require a query connecting this value to a projector of all parents and children of orgId"
+  }
 }
 
 type UpdateInfo is {
@@ -30,10 +34,14 @@ type CapacityOverview is {
 }
 
 type MetaInfo is {
-  createdOn: TimeStamp briefly "The Date/Time this venue was created.",
-  createdBy: MemberId briefly "The member who created this venue",
-  lastUpdated: TimeStamp briefly "The Date/Time this venue was last modified.",
-  lastUpdatedBy: MemberId briefly "The member who last modified this venue. This may also be a system user. i.e. they are two months late on payment so the system determines to suspend the venue.",
+  createdOn: TimeStamp with { briefly "The Date/Time this venue was created." },
+  createdBy: MemberId with { briefly "The member who created this venue" },
+  lastUpdated: TimeStamp with { briefly "The Date/Time this venue was last modified." },
+  lastUpdatedBy: MemberId with {
+    briefly "The member who last modified this venue. This may also be a system user. i.e. they are two months late on payment so the system determines to suspend the venue."
+  },
   currentStatus: VenueContext.Status,
   currentOwner: MemberId
-} briefly "Meta data kept about an venue that the user does not directly modify. Instead the system updates this info as a Member Owner updates details in the Info type."
+} with {
+  briefly "Meta data kept about an venue that the user does not directly modify. Instead the system updates this info as a Member Owner updates details in the Info type."
+}

@@ -141,13 +141,13 @@ context StoreContext is {
       on command OpenStore {
         set field Store.CreatedStore.meta to "StoreContext.MetaInfo"
         send event StoreOpened to outlet StoreEventsSource.Events
-        become entity StoreContext.Store to handler StoreContext.Store.CreatedStore.OpenStoreHandler
+        become entity StoreContext.Store to handler StoreContext.Store.OpenStoreHandler
       }
       on command CloseStore {
         "ensure all orders associated with store are Delivered or Cancelled before closing store"
         set field CreatedStore.meta to "StoreContext.MetaInfo"
         send event StoreClosed to outlet StoreEventsSource.Events
-        become entity StoreContext.Store to handler StoreContext.Store.CreatedStore.ClosedStoreHandler
+        become entity StoreContext.Store to handler StoreContext.Store.ClosedStoreHandler
       }
       on command AddProductsToStore {
         "add provided products to store definition"
@@ -190,7 +190,7 @@ context StoreContext is {
           "ensure all orders associated with store are Delivered or Cancelled before closing store"
           set field CreatedStore.meta to "StoreContext.MetaInfo"
           send event StoreClosed to outlet StoreEventsSource.Events
-          become entity StoreContext.Store to handler StoreContext.Store.CreatedStore.ClosedStoreHandler
+          become entity StoreContext.Store to handler StoreContext.Store.ClosedStoreHandler
         }
         on command AddProductsToStore {
           "add provided products to store definition"
@@ -231,7 +231,7 @@ context StoreContext is {
         on command OpenStore {
           set field CreatedStore.meta to "StoreContext.MetaInfo"
           send event StoreOpened to outlet StoreEventsSource.Events
-          become entity StoreContext.Store to handler Store.CreatedStore.OpenStoreHandler
+          become entity StoreContext.Store to handler Store.OpenStoreHandler
         }
         on command CloseStore {
           error "Store is already closed."

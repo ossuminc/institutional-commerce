@@ -1,5 +1,6 @@
-type LocationId is Id (Venues.LocationContext.Location)
+type LocationId is Id (Venues.LocationContext.Location) with {
   briefly "Unique identifier for Location Entity"
+}
 
 context LocationContext is {
     include "locationTypeDefinitions"
@@ -25,70 +26,67 @@ context LocationContext is {
             locationInfo:  ImprovingApp.Venues.LocationContext.Info,
             locationMeta:  ImprovingApp.Venues.LocationContext.MetaInfo
         }
-		    state Draft of Location.DraftState is {
-		        handler DraftLocation is {
-		            on command ImprovingApp.Venues.LocationContext.EstablishLocation {
-		              error "Location already established"
-		            }
-		            on command ImprovingApp.Venues.LocationContext.EditLocationInfo {
-		              "set Draft info fields to EditLocationInfo.info"
-		              "yield event LocationInfoUpdated"
-		            }
-		            on command ImprovingApp.Venues.LocationContext.UpdateLocationStatus {
-		              "morph Location to the state provided in UpdateVenueStatus"
-                  "set MetaInfo to capture change data"
-                  "yield event VenueInfoUpdated"
-		            }
-		            on query GetLocationVenue {
-		              if "GetLocationVenue.locationId exists as an entity" then {
-		                "yield event LocationVenue"
-		              } else {
-		                error "LocationId not found as requested"
-		              }
-		            }
-		        }
-		    }
+		    state Draft of Location.DraftState
+        handler DraftLocation is {
+            on command ImprovingApp.Venues.LocationContext.EstablishLocation {
+              error "Location already established"
+            }
+            on command ImprovingApp.Venues.LocationContext.EditLocationInfo {
+              "set Draft info fields to EditLocationInfo.info"
+              "yield event LocationInfoUpdated"
+            }
+            on command ImprovingApp.Venues.LocationContext.UpdateLocationStatus {
+              "morph Location to the state provided in UpdateVenueStatus"
+              "set MetaInfo to capture change data"
+              "yield event VenueInfoUpdated"
+            }
+            on query GetLocationVenue {
+              if "GetLocationVenue.locationId exists as an entity" then
+                "yield event LocationVenue"
+              else
+                error "LocationId not found as requested"
+              end
+            }
+        }
 
         record OpenState is {
             locationInfo: ImprovingApp.Venues.LocationContext.Info,
             locationMeta: ImprovingApp.Venues.LocationContext.MetaInfo
         }
-		    state Open of Location.OpenState is {
-		        handler OpenLocation is {
-		            on command ImprovingApp.Venues.LocationContext.EstablishLocation {
-		              error "Location already established"
-		            }
-		            on command ImprovingApp.Venues.LocationContext.EditLocationInfo {
-		              "set OnHold info fields to EditLocationInfo.info"
-		              "yield event LocationInfoUpdated"
-		            }
-		            on command ImprovingApp.Venues.LocationContext.UpdateLocationStatus {
-                  "morph Location to the state provided in UpdateLocationStatus"
-                  "set MetaInfo to capture change data"
-                  "yield event LocationStatusUpdated"
-		            }
-		        }
-		    }
+		    state Open of Location.OpenState
+        handler OpenLocation is {
+            on command ImprovingApp.Venues.LocationContext.EstablishLocation {
+              error "Location already established"
+            }
+            on command ImprovingApp.Venues.LocationContext.EditLocationInfo {
+              "set OnHold info fields to EditLocationInfo.info"
+              "yield event LocationInfoUpdated"
+            }
+            on command ImprovingApp.Venues.LocationContext.UpdateLocationStatus {
+              "morph Location to the state provided in UpdateLocationStatus"
+              "set MetaInfo to capture change data"
+              "yield event LocationStatusUpdated"
+            }
+        }
 
         record ClosedState is {
             locationInfo: ImprovingApp.Venues.LocationContext.Info,
             locationMeta: ImprovingApp.Venues.LocationContext.MetaInfo
         }
-		    state Closed of Location.ClosedState is {
-		        handler ClosedLocation is {
-		            on command ImprovingApp.Venues.LocationContext.EstablishLocation {
-		              error "Location already established"
-		            }
-		            on command ImprovingApp.Venues.LocationContext.EditLocationInfo {
-		              "set OnHold info fields to EditLocationInfo.info"
-		              "yield event LocationInfoUpdated"
-		            }
-		            on command ImprovingApp.Venues.LocationContext.UpdateLocationStatus {
-                  "morph Location to the state provided in UpdateLocationStatus"
-                  "set MetaInfo to capture change data"
-                  "yield event LocationStatusUpdated"
-		            }
-		        }
-		    }
+		    state Closed of Location.ClosedState
+        handler ClosedLocation is {
+            on command ImprovingApp.Venues.LocationContext.EstablishLocation {
+              error "Location already established"
+            }
+            on command ImprovingApp.Venues.LocationContext.EditLocationInfo {
+              "set OnHold info fields to EditLocationInfo.info"
+              "yield event LocationInfoUpdated"
+            }
+            on command ImprovingApp.Venues.LocationContext.UpdateLocationStatus {
+              "morph Location to the state provided in UpdateLocationStatus"
+              "set MetaInfo to capture change data"
+              "yield event LocationStatusUpdated"
+            }
+        }
     }
 }

@@ -1,10 +1,16 @@
 command EstablishVenue is {
-  venueId: VenueId briefly "A unique identifier for this Venue. This must be provided by the calling client.",
-  info: VenueContext.Info briefly "Details about a venue required for it to exist. See VenueContext.Info for details.",
-  establishingMember: MemberId briefly "The Id of the Member who is issuing the create command.",
-  owner: MemberId? briefly "Used in the case that establishingMember is not the owner"
-} briefly "Creates a Venue with all top-level fields, potentially without Locations"
-described in file "establishVenue.md"
+  venueId: VenueId with {
+    briefly "A unique identifier for this Venue. This must be provided by the calling client."
+  },
+  info: VenueContext.Info with {
+    briefly "Details about a venue required for it to exist. See VenueContext.Info for details."
+  },
+  establishingMember: MemberId with { briefly "The Id of the Member who is issuing the create command." },
+  owner: MemberId? with { briefly "Used in the case that establishingMember is not the owner" }
+} with {
+  briefly "Creates a Venue with all top-level fields, potentially without Locations"
+  described in file "establishVenue.md"
+}
 event VenueEstablished is {
   venueId: VenueId,
   info: VenueContext.Info,
@@ -12,11 +18,13 @@ event VenueEstablished is {
 }
 
 command EditVenueInfo is {
-  venueId: VenueId briefly "The unique Id of the venue to create",
-  newInfo: VenueContext.UpdateInfo briefly "The information about the venue",
-  editingMember: MemberId briefly "Id of the member who is creating the venue"
-} briefly "A command to edit the values of an Venue's Info "
-described in file "editVenueInfo.md"
+  venueId: VenueId with { briefly "The unique Id of the venue to create" } ,
+  newInfo: VenueContext.UpdateInfo with { briefly "The information about the venue" },
+  editingMember: MemberId with { briefly "Id of the member who is creating the venue" }
+} with {
+  briefly "A command to edit the values of an Venue's Info "
+  described in file "editVenueInfo.md"
+}
 event VenueInfoUpdated is {
   venueId: VenueId,
   info: VenueContext.Info,
@@ -45,7 +53,7 @@ event VenueLocationsAdded is {
 query GetNextVenueReservations is {
 	venueId: VenueId,
 	maxCount: Integer,
-	startDate: DateTime? briefly "Used as start date of query when present instead of now()."
+	startDate: DateTime? with { briefly "Used as start date of query when present instead of now()." }
 }
 query GetVenueReservations is {
 	venueId: VenueId,
@@ -53,19 +61,23 @@ query GetVenueReservations is {
 }
 result VenueReservations is {
 	venueId: VenueId,
-	schedule: VenueReservationsSchedule* briefly "All reservation that take place in the venue within
-																		the time range (for GetNextVenueReservations) or
-																		maxCount+startDate (for GetVenueReservations) provided"
+	schedule: VenueReservationsSchedule* with {
+	  described by {
+	    |All reservation that take place in the venue within
+		  |the time range (for GetNextVenueReservations) or
+			| maxCount+startDate (for GetVenueReservations) provided
+		}
+	}	
 }
 
 query GetNextVenueAvailability is {
 	venueId: VenueId,
 	maxCount: Integer,
-	startDate: TimeStamp? briefly "Used as start date of query when present instead of now()"
+	startDate: TimeStamp? with { briefly "Used as start date of query when present instead of now()"}
 }
 result VenueAvailabilityCalendar is {
 	venueId: VenueId,
-	schedule: VenueAvailabilitySchedule* briefly "A list of location with time ranges indicating availability"
+	schedule: VenueAvailabilitySchedule* with { briefly "A list of location with time ranges indicating availability" }
 }
 
 query GetVenueOverview is {
@@ -84,7 +96,10 @@ result VenueInfo is {
 
 query GetVenueCapacityOverview is {
 	venueId: VenueId
-} briefly "This will operate on a projector that provides the min and max capacity across locations in venues"
+} with {
+  briefly "This will operate on a projector that provides the min and max capacity across locations in venues"
+}
+
 result VenueCapacityOverview is {
 	venueId: VenueId,
   venueInfo: VenueContext.Info,
@@ -96,6 +111,7 @@ type VenueReservationsSchedule is {
 	locationId: Venues.LocationId,
 	reservations: ReservationId+
 }
+
 type VenueAvailabilitySchedule is {
 	locationId: Venues.LocationId,
 	schedule: ImprovingApp.TimeRange+

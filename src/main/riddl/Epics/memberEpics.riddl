@@ -3,7 +3,7 @@ epic RegisterMember is {
   ???
 } with {
   by author Alex
-  term 'member' is {
+  term member is {
      | An entity that is allowed to do queries on other entities or actions on other entities.
      | Much of their behaviour will be constrained or permitted be based on ownership, membership, &
      | permissions in the future.

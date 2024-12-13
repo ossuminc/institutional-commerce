@@ -139,7 +139,7 @@ context ProductContext is {
       on command ProductContext.InactivateProduct {
         set field DefinedProductState.meta to "ProductContext.ProductMetaInfo"
         send event ProductInactivated to outlet ProductEventsSource.Events
-        become entity ProductContext.Product to handler Product.DefinedProductState.InactiveProductHandler
+        become entity ProductContext.Product to handler Product.InactiveProductHandler
       }
       on query GetProductInfo{
         "yield ProductInfoResult message"
@@ -162,7 +162,7 @@ context ProductContext is {
       on command ProductContext.ActivateProduct{
         set field DefinedProductState.meta to "ProductContext.ProductMetaInfo"
         send event ProductActivated to outlet ProductEventsSource.Events
-        become entity ProductContext.Product to handler Product.DefinedProductState.ActiveProductHandler
+        become entity ProductContext.Product to handler Product.ActiveProductHandler
       }
       on command ProductContext.InactivateProduct{
         error "Product is already Inactive"

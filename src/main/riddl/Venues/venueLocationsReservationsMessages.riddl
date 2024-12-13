@@ -2,7 +2,7 @@
 query GetNextVenueReservations is {
 	venueId: VenueId,
 	maxCount: Integer,
-	startTime: TimeStamp? briefly "Used as start date of query when present instead of now()."
+	startTime: TimeStamp? with { briefly "Used as start date of query when present instead of now()." }
 }
 query GetVenueReservationsInRange is {
 	venueId: VenueId,
@@ -10,26 +10,30 @@ query GetVenueReservationsInRange is {
 }
 result VenueReservations is {
 	venueId: VenueId,
-	schedule: VenueReservationsSchedule* briefly "All reservation that take place in the venue within
-																		the time range (for GetNextVenueReservations) or
-																		maxCount+startDate (for GetVenueReservations) provided"
+	schedule: VenueReservationsSchedule* with { described by
+	  |All reservation that take place in the venue within
+    |the time range (for GetNextVenueReservations) or
+    |maxCount+startDate (for GetVenueReservations) provided
+  }
 }
 
 query GetNextVenueAvailability is {
 	venueId: VenueId,
 	maxCount: Integer,
-	startDate: TimeStamp? briefly "Used as start date of query when present instead of now()"
+	startDate: TimeStamp? with { briefly "Used as start date of query when present instead of now()" }
 }
 result VenueAvailabilityCalendar is {
 	venueId: VenueId,
-	schedule: VenueAvailabilitySchedule* briefly "A list of location with time ranges indicating availability"
+	schedule: VenueAvailabilitySchedule* with {
+	  briefly "A list of location with time ranges indicating availability"
+	}
 }
 
 //based on Venus.LocationId
 query GetNextLocationReservations is {
   locationId: Venues.LocationId,
   maxCount: Integer,
-	startDate: TimeStamp? briefly "Used as start date of query when present instead of now()"
+	startDate: TimeStamp? with { briefly "Used as start date of query when present instead of now()" }
 }
 query GetLocationReservations is {
 	venueId: Venues.LocationId,
@@ -37,20 +41,32 @@ query GetLocationReservations is {
 }
 result LocationReservations is {
 	venueId: Venues.LocationId,
-	schedule: ReservationId* briefly "All reservation that take place in the location within
-																		the time range (for GetNextLocationReservations) or
-																		maxCount+startDate (for GetLocationReservations) provided"
+	schedule: ReservationId* with {
+    described by {
+      |All reservation that take place in the location within
+			|the time range (for GetNextLocationReservations) or
+			|maxCount+startDate (for GetLocationReservations) provided
+		}
 }
 
 query GetNextLocationAvailability is {
 	locationId: Venues.LocationId,
 	maxCount: Integer,
-	startDate: TimeStamp? briefly "Used as start date of query when present instead of now()"
+	startDate: TimeStamp? with { briefly "Used as start date of query when present instead of now()" }
 }
 result LocationAvailabilityCalendar is {
 	locationId: Venues.LocationId,
-	schedule: ImprovingApp.TimeRange* briefly "A list of time ranges indicating availability"
+	schedule: ImprovingApp.TimeRange* with { briefly "A list of time ranges indicating availability" }
 }
 
-query FindAvailableLocationsInDateRange is {locationId: Venues.LocationId, start: Date, end: Date}
-query FindAvailableLocationsInDateRangeWithAmenities is {locationId: Venues.LocationId, start: Date, end: Date, desiredAmenities: String*}
+query FindAvailableLocationsInDateRange is {
+  locationId: Venues.LocationId,
+  start: Date,
+  end: Date
+}
+query FindAvailableLocationsInDateRangeWithAmenities is {
+  locationId: Venues.LocationId,
+  start: Date,
+  end: Date,
+  desiredAmenities: String*
+}

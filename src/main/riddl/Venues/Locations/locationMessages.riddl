@@ -10,7 +10,9 @@ command EstablishLocation is {
   amenities: String*,
   entrances: Address+,
   reservations: ReservationId*
-} briefly "Creates a Location with all top-level fields, potentially without Locations"
+} with {
+  briefly "Creates a Location with all top-level fields, potentially without Locations"
+}
 
 event LocationEstablished is {
   locationId: Venues.LocationId,
@@ -39,10 +41,13 @@ event LocationStatusUpdated is {
 }
 
 command EditLocationInfo is {
-  locationId: Venues.LocationId briefly "The unique Id of the location to create",
-  newInfo: Venues.LocationContext.UpdateInfo briefly "The information about the location",
-  editingMember: MemberId briefly "Id of the member who is creating the location"
-} briefly "A command to edit the values of an Reservation's Info "
+  locationId: Venues.LocationId with { briefly "The unique Id of the location to create" },
+  newInfo: Venues.LocationContext.UpdateInfo with { briefly "The information about the location" },
+  editingMember: MemberId with { briefly "Id of the member who is creating the location" }
+} with {
+  briefly "A command to edit the values of an Reservation's Info "
+}
+
 event LocationInfoUpdated is {
   locationId: Venues.LocationId,
   info: Venues.LocationContext.Info,
@@ -52,7 +57,9 @@ event LocationInfoUpdated is {
 query GetNextLocationReservations is {
   locationId: Venues.LocationId,
   maxCount: Integer,
-  startDate: DateTime? briefly "Used as start date of query when present instead of now()"
+  startDate: DateTime? with {
+    briefly "Used as start date of query when present instead of now()"
+  }
 }
 query GetLocationReservations is {
   venueId: Venues.LocationId,
@@ -60,27 +67,42 @@ query GetLocationReservations is {
 }
 result LocationReservations is {
   venueId: Venues.LocationId,
-  schedule: ReservationId* briefly "All reservation that take place in the location within
-									the time range (for GetNextLocationReservations) or
-									maxCount+startDate (for GetLocationReservations) provided"
+  schedule: ReservationId* with {
+    described by {
+      |All reservation that take place in the location within
+			|the time range (for GetNextLocationReservations) or
+			|maxCount+startDate (for GetLocationReservations) provided
+		}
+	}
 }
 
 query GetNextLocationAvailability is {
   locationId: Venues.LocationId,
   maxCount: Integer,
-  startDate: DateTime? briefly "Used as start date of query when present instead of now()"
+  startDate: DateTime? with { briefly "Used as start date of query when present instead of now()" }
 }
 result LocationAvailabilityCalendar is {
   locationId: Venues.LocationId,
-  schedule: ImprovingApp.TimeRange* briefly "A list of time ranges indicating availability"
+  schedule: ImprovingApp.TimeRange* with { briefly "A list of time ranges indicating availability" }
 }
 
-query FindAvailableLocationsInRange is {locationId: Venues.LocationId, start: Date, end: Date}
-query FindAvailableLocationsInRangeWithAmenities is {locationId: Venues.LocationId, start: Date, end: Date, desiredAmenities: String*}
+query FindAvailableLocationsInRange is {
+  locationId: Venues.LocationId,
+  start: Date,
+  end: Date
+}
+
+query FindAvailableLocationsInRangeWithAmenities is {
+  locationId: Venues.LocationId,
+  start: Date,
+  end: Date,
+  desiredAmenities: String*
+}
 
 query GetLocationVenue is {
   locationId: Venues.LocationId
 }
+
 result LocationVenue is {
   locationId: Venues.LocationId,
   venueId: VenueId

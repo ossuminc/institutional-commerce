@@ -42,7 +42,7 @@ context AllIdsProjections is  {
      record AllOrgIdsFields {
         org: OrganizationId
     } with {
-      description as {
+      described by {
         "maybe with: orgStatus: OrganizationContext.Status"
       }
     }

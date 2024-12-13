@@ -1,17 +1,21 @@
 command EstablishOrganization is {
   orgId: OrganizationId,
-  info: OrganizationContext.Info briefly "Details about an organization required for it to exist. See OrganizationContext.Organization.Info for details.",
+  info: OrganizationContext.Info with { briefly "Details about an organization required for it to exist. See OrganizationContext.Organization.Info for details." },
   tenant: TenantId,
   parent:  ImprovingApp.OrganizationContext.Parent?,
   members: MemberList,
   owners: OwnerList,
   contacts: ContactList,
-  onBehalfOf: MemberId briefly "The Id of the Member who is issuing the command."
-} briefly "If parentOrg is not defined you are creating a BaseOrganization. If it is, you are creating a SubOrganization."
-described in file "establishOrganization.md"
+  onBehalfOf: MemberId with { briefly "The Id of the Member who is issuing the command." }
+} with {
+  briefly "If parentOrg is not defined you are creating a BaseOrganization. If it is, you are creating a SubOrganization."
+  described in file "establishOrganization.md"
+}
 
 event OrganizationEstablished is {
-  organizationId: OrganizationId briefly "Unique identifier returned by EstablishOrganization command",
+  organizationId: OrganizationId with {
+    briefly "Unique identifier returned by EstablishOrganization command"
+  },
   info: OrganizationContext.Info,
   parent:  ImprovingApp.OrganizationContext.Parent?,
   members: MemberList,
@@ -21,11 +25,13 @@ event OrganizationEstablished is {
 }
 
 command EditOrganizationInfo is {
-  organizationId: OrganizationId briefly "The unique Id of the organization to create",
-  newInfo: OrganizationContext.EditableInfo briefly "The information about the organization",
-  onBehalfOf: MemberId briefly "Id of the member who is creating the organization"
-} briefly "A command to edit the values of an Organization's Info "
-described in file "editOrganizationInfo.md"
+  organizationId: OrganizationId with { briefly "The unique Id of the organization to create" },
+  newInfo: OrganizationContext.EditableInfo with { briefly "The information about the organization" },
+  onBehalfOf: MemberId with { briefly "Id of the member who is creating the organization" }
+} with {
+  briefly "A command to edit the values of an Organization's Info "
+  described in file "editOrganizationInfo.md"
+}
 
 event OrganizationInfoEdited {
   organizationId: OrganizationId,
@@ -46,9 +52,9 @@ command AddMembersToOrganization is {
   organizationId: OrganizationId,
   membersToAdd: MemberId+,
   onBehalfOf: MemberId
-  // TODO: organizationId: OrganizationId briefly @orgId,
-  // TODO: members: MemberId+ briefly @membersList
 }
+// TODO: organizationId: OrganizationId briefly @orgId,
+// TODO: members: MemberId+ briefly @membersList
 // TODO: Should members be a list of the all members (including new), or should it be only the new members (relevant for #2 and 4 above)
 event MembersAddedToOrganization is {
   organizationId: OrganizationId,
@@ -124,15 +130,20 @@ event OrganizationTerminated is {
 
 command UpdateOrganizationAccounts is {
   organizationId: OrganizationId
-  /*,
-  accounts: Accounts */
+  // TODO: add: accounts: Accounts
 }
+
 event OrganizationAccountsUpdated is {
   info: OrganizationContext.Info,
   meta: OrganizationContext.MetaInfo
 }
 
-query FindOrganizationsByMemberOrOwner is {memberOrOwner: MemberId, isMember: Boolean} briefly "Get a list of organizations that a member belongs to."
+query FindOrganizationsByMemberOrOwner is {
+  memberOrOwner: MemberId,
+  isMember: Boolean
+} with {
+  briefly "Get a list of organizations that a member belongs to."
+}
 result OrganizationListByMemberOrOwner is {
   memberOrOwner: MemberId,
   isMember: Boolean,

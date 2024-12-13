@@ -1,8 +1,8 @@
-type TenantId is Id(ImprovingApp.TenantContext.Tenant)
+type TenantId is Id(ImprovingApp.TenantContext.Tenant) with {
   briefly "Unique identifier for Tenant Entity"
+}
 
 context TenantContext is {
-    by author James by author Alex
     include "tenantTypeDefinitions"
     include "tenantMessages"
     include "tenantProjections"
@@ -14,17 +14,17 @@ context TenantContext is {
 
         handler TenantHandler is {
           on command EstablishTenant {
-            if "name is being used for another tenant" then {
+            if "name is being used for another tenant" then
               error "Name is not available for use"
-            } else {
-              if "primaryContact info is not complete" then {
+            else
+              if "primaryContact info is not complete" then
                 error "primaryContact must be complete in order to establish a Tenant"
-              } else {
+              else
                 send event TenantEstablished to outlet TenantEventsSource.Events
                 morph entity Tenant to state EstablishedTenant with
                   record EstablishedTenantState
-              }
-            }
+              end
+            end
           }
         }
 
@@ -149,109 +149,116 @@ context TenantContext is {
             id: TenantId,
             info: TenantContext.TenantInfo,
             meta: TenantContext.TenantMetaInfo
-        } briefly "Tenant is active and suitable for use"
-        state EstablishedTenant of EstablishedTenantState is {
-            handler ActiveTenantHandler is {
-              on command TenantContext.EditInfo {
-                "Copy fields which are present from TenantContext.EditInfo.newInfo into info fields"
-                set field EstablishedTenantState.meta to "record TenantContext.TenantMetaInfo"
-                send event TenantContext.InfoEdited
-                  to outlet TenantEventsSource.Events
-              }
-              on command SuspendTenant {
-                if "updating user is not authorized to suspend tenant" then {
-                  error "User is not authorized to suspend Tenant"
-                } else {
-                  set field EstablishedTenantState.meta to "record TenantContext.TenantMetaInfo"
-                  send event TenantContext.TenantSuspended to outlet TenantEventsSource.Events
-                  become entity Tenant to handler SuspendedTenantHandler
-                }
-              }
-	            on command TerminateTenant {
-	              if "terminating user is not authorized to make changes to the tenant" then {
-	                error "User is not authorized to modify Tenant"
-	              } else {
-                  set field EstablishedTenantState.meta to "TenantContext.TenantMetaInfo"
-                  send event TenantContext.TenantTerminated to outlet TenantEventsSource.Events
-	                morph entity Tenant to state TerminatedTenant with record TerminatedTenantState
-	              }
-	            }
-	            // TODO: These need to be updated once we get around to payments
-                // on command SwapBillingAccount {
-                //     example Success {
-                //         then "Update the BillingAccountId"
-                //         and "set tenant meta data to reflect change"
-                //         and "yield BillingAccountSwapped event"
-                //     }
-                //     example InvalidBillingAccount {
-                //         when "BillingAccount ID does not exist"
-                //         then error "BillingAccount ID does not exist"
-                //     }
-                //     example NotAuthorized {
-                //         when "updating user is not authorized to make changes to the tenant"
-                //         then error "User is not authorized to modify Tenant"
-                //     }
-                // }
-                // on command SwapDistributionAccount {
-                //     example Success {
-                //         then "Update the DistributionAccountId"
-                //         and "set tenant meta data to reflect change"
-                //         and "yield DistributionAccountSwapped event"
-                //     }
-                //     example InvalidBillingAccount {
-                //         when "DistributionAccount ID does not exist"
-                //         then error "DistributionAccount ID does not exist"
-                //     }
-                //     example NotAuthorized {
-                //         when "updating user is not authorized to make changes to the tenant"
-                //         then error "User is not authorized to modify Tenant"
-                //     }
-                // }
-                on other {
-                  error "Command not allowed in Active state"
-                }
+        } with {
+          briefly "Tenant is active and suitable for use"
+        }
+        state EstablishedTenant is EstablishedTenantState
+        handler ActiveTenantHandler is {
+          on command TenantContext.EditInfo {
+            "Copy fields which are present from TenantContext.EditInfo.newInfo into info fields"
+            set field EstablishedTenantState.meta to "record TenantContext.TenantMetaInfo"
+            send event TenantContext.InfoEdited
+              to outlet TenantEventsSource.Events
+          }
+          on command SuspendTenant {
+            if "updating user is not authorized to suspend tenant" then
+              error "User is not authorized to suspend Tenant"
+            else
+              set field EstablishedTenantState.meta to "record TenantContext.TenantMetaInfo"
+              send event TenantContext.TenantSuspended to outlet TenantEventsSource.Events
+              become entity Tenant to handler SuspendedTenantHandler
+            end
+          }
+          on command TerminateTenant {
+            if "terminating user is not authorized to make changes to the tenant" then
+              error "User is not authorized to modify Tenant"
+            else
+              set field EstablishedTenantState.meta to "TenantContext.TenantMetaInfo"
+              send event TenantContext.TenantTerminated to outlet TenantEventsSource.Events
+              morph entity Tenant to state TerminatedTenant with record TerminatedTenantState
+            end
+          }
+          // TODO: These need to be updated once we get around to payments
+            // on command SwapBillingAccount {
+            //     example Success {
+            //         then "Update the BillingAccountId"
+            //         and "set tenant meta data to reflect change"
+            //         and "yield BillingAccountSwapped event"
+            //     }
+            //     example InvalidBillingAccount {
+            //         when "BillingAccount ID does not exist"
+            //         then error "BillingAccount ID does not exist"
+            //     }
+            //     example NotAuthorized {
+            //         when "updating user is not authorized to make changes to the tenant"
+            //         then error "User is not authorized to modify Tenant"
+            //     }
+            // }
+            // on command SwapDistributionAccount {
+            //     example Success {
+            //         then "Update the DistributionAccountId"
+            //         and "set tenant meta data to reflect change"
+            //         and "yield DistributionAccountSwapped event"
+            //     }
+            //     example InvalidBillingAccount {
+            //         when "DistributionAccount ID does not exist"
+            //         then error "DistributionAccount ID does not exist"
+            //     }
+            //     example NotAuthorized {
+            //         when "updating user is not authorized to make changes to the tenant"
+            //         then error "User is not authorized to modify Tenant"
+            //     }
+            // }
+            on other {
+              error "Command not allowed in Active state"
             }
-            handler SuspendedTenantHandler is {
-              on command TenantContext.EditInfo {
-                "Copy fields which are present from TenantContext.EditInfo.newInfo into info fields"
-                set field EstablishedTenantState.meta to "TenantContext.TenantMetaInfo"
-                send event TenantContext.InfoEdited
-                  to outlet TenantEventsSource.Events
-              }
-              on command ActivateTenant {
-                if "updating user is not authorized to activate the tenant" then{
-                  error "User is not authorized to Activate Tenant"
-                } else {
-                  set field EstablishedTenantState.meta to "TenantContext.TenantMetaInfo"
-                  send event TenantContext.TenantSuspended to outlet TenantEventsSource.Events
-                  become entity Tenant to handler ActiveTenantHandler
-                }
-              }
-              on command TerminateTenant {
-                if "terminating user is not authorized to make changes to the tenant" then {
-                  error "User is not authorized to modify Tenant"
-                } else {
+        }
+        handler SuspendedTenantHandler is {
+          on command TenantContext.EditInfo {
+            "Copy fields which are present from TenantContext.EditInfo.newInfo into info fields"
+            set field EstablishedTenantState.meta to "TenantContext.TenantMetaInfo"
+            send event TenantContext.InfoEdited
+              to outlet TenantEventsSource.Events
+          }
+          on command ActivateTenant {
+            if "updating user is not authorized to activate the tenant" then
+              error "User is not authorized to Activate Tenant"
+            else
+              set field EstablishedTenantState.meta to "TenantContext.TenantMetaInfo"
+              send event TenantContext.TenantSuspended to outlet TenantEventsSource.Events
+              become entity Tenant to handler ActiveTenantHandler
+            end
+          }
+          on command TerminateTenant {
+            if "terminating user is not authorized to make changes to the tenant" then
+              error "User is not authorized to modify Tenant"
+            else
 //                  set field EstablishedTenantState.meta to "TenantContext.TenantMetaInfo"
-                  send event TenantContext.TenantTerminated
-                    to outlet TenantEventsSource.Events
-                  morph entity Tenant to state TerminatedTenant with record TerminatedTenantState
-                }
-              }
-              on other {
-                error "Command not allowed in Suspended state"
-              }
-            }
+              send event TenantContext.TenantTerminated
+                to outlet TenantEventsSource.Events
+              morph entity Tenant to state TerminatedTenant with record TerminatedTenantState
+            end
+          }
+          on other {
+            error "Command not allowed in Suspended state"
+          }
         }
 
         record TerminatedTenantState is {
           lastMeta: TenantContext.TenantMetaInfo
-        } briefly "Tenant is is terminated, all data has been deleted"
-        state TerminatedTenant of TerminatedTenantState is {
-          handler TerminatedTenantHandler is {
-            on other {
-              error "Command not allowed in Terminated state"
-            }
+        } with {
+          briefly "Tenant is is terminated, all data has been deleted"
+        }
+        state TerminatedTenant is TerminatedTenantState
+
+        handler TerminatedTenantHandler is {
+          on other {
+            error "Command not allowed in Terminated state"
           }
         }
     }
-} described in file "tenant.md"
+} with {
+  by author James
+  by author Alex
+  described in file "tenant.md"
+}

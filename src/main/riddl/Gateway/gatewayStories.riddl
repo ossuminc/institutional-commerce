@@ -1,8 +1,8 @@
 epic RegisterMember {
-  user ImprovingApp.GatewayAPI.AnonUser wants to "register himself" so that "they can use ImprovingApp"
+  user ImprovingApp.GatewayAPI.Member wants to "register himself" so that "they can use ImprovingApp"
 
   case HappyPath is {
-    user ImprovingApp.GatewayAPI.AnonUser wants to "register himself" so that "they can use ImprovingApp"
+    user ImprovingApp.GatewayAPI.Member wants to "register himself" so that "they can use ImprovingApp"
     step from user ImprovingApp.GatewayAPI.Member "RegisterMember" to user App with {
       briefly "initial invocation"
     }
@@ -21,11 +21,36 @@ epic RegisterMember {
   described as "This is the story of how a member comes to existence in Improving.app"
 }
 
-// TODO: Convert this file to new syntax for epics and applicaiton
+/*
+epic EventBookingEasyButton is {
+  user GatewayAPI.Member wants to "press easy button to make a reservation" so that "time is saved"
+  case primary is {
+    user GatewayAPI.Member wants to "press easy button to make a reservation" so that "time is saved"
+    step from user GatewayAPI.Member "presses easy button to make a reservation" to
+      input ImprovingApp.UserInterface.MyEventsPages.easy with {
+        briefly "make a reservation by searching for a location - includes max attendance, start/end time, already created event info"
+      }
+    step from output ImprovingApp.UserInterface.MyEventsPage.show "presented" to user Owner with {
+      briefly "location(s) will appear as that honour max attendance and event info parameters in the nearest time to start and end available"
+    }
+    step from user GatewayAPI.Member "selects a location" to input ImprovingApp.UserInterface.MyEventsPages.easy with {
+      briefly "user selects a location based on the list that appeared in the previous step & requests gateway to create reservation"
+    }
+    step from output ImprovingApp.UserInterface.MyEventsPage.show "presented" to user GatewayAPI.Member with {
+      briefly "notify user that event now has a reservation in selected location"
+    }
+  }
+} with {
+  briefly "A story about scheduling an event with the easy button in Improving.app"
+  described as "This is the story of how an event is scheduled with an easy button."
+}
+*/
+// TODO: Convert this file to new syntax for epics and application
 // Member Stories (James)
 //As a person who would like to use the features of ImprovingApp I would like to register a new user account so that I can access those features
 // epic RegisterMember is { ??? }
 
+/*
 As a Member I would like to maintain my iAppCoins Account so that I can make purchases (funny money)
 As a user of ImprovingApp I can deposit iAppCoins into my account so I can spend them within the app
 As a Member I would like to check the balance of my iAppCoins Account to see if I have enough coin to make a purchase
@@ -49,30 +74,6 @@ As an Owner of an Organization I would like to find a Location, Reserve the Loca
   - After creating an event but before scheduling an event (booking a reservation)
   - Gather interest in an event prior to Reserving the event
 
-epic EventBookingEasyButton is {
-  case primary is {
-    step from user Owner "presses easy button to make a reservation" to
-      input ImprovingApp.Improving_app.MyEventsPages.easy
-      with {
-        briefly "make a reservation by searching for a location - includes max attendance, start/end time, already created event info"
-      }
-    step from output ImprovingApp.Improving_app.MyEventsPage.show
-      "presented" to user Owner with {
-        briefly "location(s) will appear as that honour max attendance and event info parameters in the nearest time to start and end available"
-      }
-    step from user Owner "selects a location" to
-      input ImprovingApp.Improving_app.MyEventsPages.easy with {
-      briefly "user selects a location based on the list that appeared in the previous step & requests gateway to create reservation"
-      }
-    step from output ImprovingApp.Improving_app.MyEventsPage.show
-      "presented" to user Owner with {
-        briefly "notify user that event now has a reservation in selected location"
-      }
-  }
-} with {
-  briefly "A story about scheduling an event with the easy button in Improving.app"
-  described as "This is the story of how an event is scheduled with an easy button."
-}
 
 //Place Stories (Alex)
 As a Tenant Owner I would like to create a Venue

@@ -1,5 +1,6 @@
-type ReservationId is Id (ImprovingApp.Events.ReservationContext.Reservation)
+type ReservationId is Id (ImprovingApp.Events.ReservationContext.Reservation) with {
   briefly "Unique identifier for Reservation Entity"
+}
 
 context ReservationContext is {
     include "reservationTypeDefinitions"
@@ -10,103 +11,99 @@ context ReservationContext is {
         option event-sourced
         option available
 
-		    handler ReservationHandler is {
-		        on command EstablishReservation {
-              morph entity Reservation to state ImprovingApp.Events.ReservationContext.Reservation.Draft with
-                record ImprovingApp.Events.ReservationContext.Reservation.DraftState
-              "Copy fields from the command into Draft fields"
-              "adjust meta fields to reflect the change set"
-              send event ReservationEstablished to outlet ReservationEventsSource.Events
-		        }
-		        on other {
-		          error "Only EstablishReservation command is allowed in the default state"
-		        }
-		    }
+        handler ReservationHandler is {
+          on command EstablishReservation {
+            morph entity Reservation to state ImprovingApp.Events.ReservationContext.Reservation.Draft with
+              record ImprovingApp.Events.ReservationContext.Reservation.DraftState
+            "Copy fields from the command into Draft fields"
+            "adjust meta fields to reflect the change set"
+            send event ReservationEstablished to outlet ReservationEventsSource.Events
+          }
+          on other {
+            error "Only EstablishReservation command is allowed in the default state"
+          }
+        }
 
         record DraftState {
             reservationInfo: ReservationContext.Info,
             attendees: MemberId*,
             reservationMeta: ReservationContext.MetaInfo
         }
-		    state Draft of Reservation.DraftState is {
-		        handler DraftReservation is {
-		            on command ImprovingApp.Events.ReservationContext.EstablishReservation {
-		              error "Reservation already established"
-		            }
-		            on command ImprovingApp.Events.ReservationContext.EditReservationInfo {
-		              set field ImprovingApp.Events.ReservationContext.Reservation.Draft.reservationInfo to "EditReservationInfo.info"
-		              send event ReservationInfoUpdated to outlet ReservationEventsSource.Events
-		            }
-		            on command ImprovingApp.Events.ReservationContext.UpdateReservationStatus {
-                  "morph entity Reservation to state provided in UpdateReservationStatus"
-                  "set MetaInfo to capture change data"
-                  "yield event ReservationStatusUpdated"
-                }
-		        }
-		    }
+        state Draft of Reservation.DraftState
+
+        handler DraftReservation is {
+            on command ImprovingApp.Events.ReservationContext.EstablishReservation {
+              error "Reservation already established"
+            }
+            on command ImprovingApp.Events.ReservationContext.EditReservationInfo {
+              set field ImprovingApp.Events.ReservationContext.Reservation.Draft.reservationInfo to "EditReservationInfo.info"
+              send event ReservationInfoUpdated to outlet ReservationEventsSource.Events
+            }
+            on command ImprovingApp.Events.ReservationContext.UpdateReservationStatus {
+              "morph entity Reservation to state provided in UpdateReservationStatus"
+              "set MetaInfo to capture change data"
+              "yield event ReservationStatusUpdated"
+            }
+        }
 
         record OnHoldState {
             reservationInfo: ReservationContext.Info,
             reservationMeta: ReservationContext.MetaInfo
         }
-		    state OnHold of Reservation.OnHoldState is {
-		        handler OnHoldReservation is {
-		            on command ImprovingApp.Events.ReservationContext.EstablishReservation {
-		              error "Reservation already established"
-		            }
-		            on command ImprovingApp.Events.ReservationContext.EditReservationInfo {
-		              "set OnHold info fields to EditReservationInfo.info"
-		              "yield event ReservationInfoUpdated"
-		            }
-		            on command ImprovingApp.Events.ReservationContext.UpdateReservationStatus {
-                  "morph Reservation to the state provided in UpdateReservationStatus"
-                  "set MetaInfo to capture change data"
-                  "yield event ReservationStatusUpdated"
-                }
-		        }
-		    }
+        state OnHold of Reservation.OnHoldState
+        handler OnHoldReservation is {
+            on command ImprovingApp.Events.ReservationContext.EstablishReservation {
+              error "Reservation already established"
+            }
+            on command ImprovingApp.Events.ReservationContext.EditReservationInfo {
+              "set OnHold info fields to EditReservationInfo.info"
+              "yield event ReservationInfoUpdated"
+            }
+            on command ImprovingApp.Events.ReservationContext.UpdateReservationStatus {
+              "morph Reservation to the state provided in UpdateReservationStatus"
+              "set MetaInfo to capture change data"
+              "yield event ReservationStatusUpdated"
+            }
+        }
 
         record ReservedState {
             reservationInfo: ReservationContext.Info,
             reservationMeta: ReservationContext.MetaInfo
         }
-		    state Reserved of Reservation.ReservedState is {
-		        handler ReservedReservation is {
-		            on command ImprovingApp.Events.ReservationContext.EstablishReservation {
-		              error "Reservation already established"
-		            }
-		            on command ImprovingApp.Events.ReservationContext.EditReservationInfo {
-		              error "Reservation is in Reserved state, editing info not allows"
-		            }
-		            on command ImprovingApp.Events.ReservationContext.UpdateReservationStatus {
-                  "morph Reservation to the state provided in UpdateReservationStatus"
-                  "set MetaInfo to capture change data"
-                  "yield event ReservationStatusUpdated"			            }
-		        }
-		    }
+        state Reserved of Reservation.ReservedState
+        handler ReservedReservation is {
+            on command ImprovingApp.Events.ReservationContext.EstablishReservation {
+              error "Reservation already established"
+            }
+            on command ImprovingApp.Events.ReservationContext.EditReservationInfo {
+              error "Reservation is in Reserved state, editing info not allows"
+            }
+            on command ImprovingApp.Events.ReservationContext.UpdateReservationStatus {
+              "morph Reservation to the state provided in UpdateReservationStatus"
+              "set MetaInfo to capture change data"
+              "yield event ReservationStatusUpdated"			            }
+        }
 
         record PastState {
             reservationInfo: ReservationContext.Info,
             reservationMeta: ReservationContext.MetaInfo
         }
-		    state Past of Reservation.PastState is {
-		        handler PastReservation is {
-		            on other {
-		              error "No modification commands allowed in Past state"
-		            }
-		        }
-		    }
+        state Past of Reservation.PastState
+        handler PastReservation is {
+          on other {
+            error "No modification commands allowed in Past state"
+          }
+        }
 
         record CancelledState is {
             reservationInfo: ReservationContext.Info,
             reservationMeta: ReservationContext.MetaInfo
         }
-		    state Cancelled of Reservation.CancelledState is {
-		        handler PastReservation is {
-		            on other {
-		              error "No modification commands allowed in Cancelled state"
-		            }
-		        }
-		    }
-		}
+        state Cancelled of Reservation.CancelledState
+        handler CancelledReservation is {
+          on other {
+            error "No modification commands allowed in Cancelled state"
+          }
+        }
+    }
 }

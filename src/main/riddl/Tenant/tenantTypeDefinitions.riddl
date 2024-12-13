@@ -3,41 +3,46 @@ type OptionalInfo is {
   primaryContact: Contact?,
   address: Address?,
   orgs: ImprovingApp.OrganizationId*
-} briefly "Information about the tenant"
+} with {
+  briefly "Information about the tenant"
+}
 
 type TenantInfo is {
   name: String,
   primaryContact: Contact,
   address: Address,
   orgs: OrganizationId*
-} briefly "Information about the tenant"
+} with {
+  briefly "Information about the tenant"
+}
 
 type TenantMetaInfo is {
-    createdOn: TimeStamp
-      briefly "The Date/Time this tenant was created.",
-    createdBy: Contact
-      briefly "The person who created this tenant",
-    lastUpdated: TimeStamp
-      briefly "The Date/Time this tenant was last modified.",
-    lastUpdatedBy: MemberId
+    createdOn: TimeStamp with { briefly "The Date/Time this tenant was created." },
+    createdBy: Contact with { briefly "The person who created this tenant" },
+    lastUpdated: TimeStamp with { briefly "The Date/Time this tenant was last modified." },
+    lastUpdatedBy: MemberId with {
       briefly "The member who last modified this Tenant."
       described as {
         |This may also be a system user. i.e. they are two months late on
         |payment so the system determines to suspend the tenant.
-      },
-    currentState: TenantStates
+      }
+    }  ,
+    currentState: TenantStates with {
       briefly "The current state of this tenant"
       described as {
         |Valid states include Active and Suspended.
       }
-} briefly "Meta information about a tenant"
-described as {
-  |data kept about an organization that the user does not directly modify.
-  |Instead the system updates this info as a Member Owner updates details
-  |in the Info type."
+    }
+} with {
+  briefly "Meta information about a tenant"
+  described as {
+    |data kept about an organization that the user does not directly modify.
+    |Instead the system updates this info as a Member Owner updates details
+    |in the Info type."
+  }
 }
 
 type TenantStates is any of {
-  Active briefly "Tenant is active and suitable for use",
-  Suspended briefly "Tenant is created but administratively suspended"
+  Active with { briefly "Tenant is active and suitable for use" },
+  Suspended with { briefly "Tenant is created but administratively suspended" }
 }

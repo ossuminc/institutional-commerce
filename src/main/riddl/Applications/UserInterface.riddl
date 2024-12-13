@@ -4,7 +4,7 @@ context UserInterface is {
       briefly "Details about an organization required for it to exist. See OrganizationContext.Organization.Info for details."
     },
     tenant: TenantId,
-    parent: OrganizationContext.Parent?,
+    parent: ImprovingApp.OrganizationContext.Parent?,
     members: MemberList,
     owners: OwnerList,
     contacts: ContactList,

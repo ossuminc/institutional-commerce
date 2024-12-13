@@ -1,8 +1,8 @@
-type VenueId is Id (ImprovingApp.Venues.VenueContext.Venue)
+type VenueId is Id (ImprovingApp.Venues.VenueContext.Venue) with {
   briefly "Unique identifier for Venue Entity"
+}
 
 context VenueContext is {
-    by author James by author Alex
     include "venueTypeDefinitions"
     include "venueMessages"
     include "venueProjections"
@@ -28,80 +28,81 @@ context VenueContext is {
             locations: Venues.LocationId*,
             venueMeta: VenueContext.MetaInfo
         }
-		    state Draft of Venue.DraftState is {
-		        handler DraftVenue is {
-		            on command EstablishVenue {
-		              error "Venue already established"
-		            }
-				        on command EditVenueInfo {
-				          "set Draft info fields to EditVenueInfo.info"
-				          "yield event VenueInfoUpdated"
-				        }
-				        on command UpdateVenueStatus {
-		              "morph Venue to the state provided in UpdateVenueStatus"
-                  "set MetaInfo to capture change data"
-                  "yield event VenueInfoUpdated"
-		            }
-				        on command AddVenueLocations {
-		              "add the LocationIds provided in this command to Venue.locations"
-                  "set MetaInfo to capture change data"
-                  "yield event VenueInfoUpdated"
-		            }
-			      }
-	      }
+		    state Draft of Venue.DraftState
+        handler DraftVenue is {
+            on command EstablishVenue {
+              error "Venue already established"
+            }
+            on command EditVenueInfo {
+              "set Draft info fields to EditVenueInfo.info"
+              "yield event VenueInfoUpdated"
+            }
+            on command UpdateVenueStatus {
+              "morph Venue to the state provided in UpdateVenueStatus"
+              "set MetaInfo to capture change data"
+              "yield event VenueInfoUpdated"
+            }
+            on command AddVenueLocations {
+              "add the LocationIds provided in this command to Venue.locations"
+              "set MetaInfo to capture change data"
+              "yield event VenueInfoUpdated"
+            }
+        }
 
         record OpenState is {
             venueInfo: VenueContext.Info,
             locations: Venues.LocationId*,
             venueMeta: VenueContext.MetaInfo
         }
-		    state Open of Venue.OpenState is {
-		        handler OpenVenue is {
-		            on command EstablishVenue {
-		              error "Venue already established"
-		            }
-				        on command EditVenueInfo {
-				          "set Open info fields to EditVenueInfo.info"
-				          "yield event VenueInfoUpdated"
-				        }
-				        on command UpdateVenueStatus {
-		              "morph Venue to the state provided in UpdateVenueStatus"
-                  "set MetaInfo to capture change data"
-                  "yield event VenueInfoUpdated"
-		            }
-				        on command AddVenueLocations {
-		              "add the LocationIds provided in this command to Venue.locations"
-                  "set MetaInfo to capture change data"
-                  "yield event VenueInfoUpdated"
-		            }
-		        }
-		    }
+		    state Open of Venue.OpenState
+        handler OpenVenue is {
+            on command EstablishVenue {
+              error "Venue already established"
+            }
+            on command EditVenueInfo {
+              "set Open info fields to EditVenueInfo.info"
+              "yield event VenueInfoUpdated"
+            }
+            on command UpdateVenueStatus {
+              "morph Venue to the state provided in UpdateVenueStatus"
+              "set MetaInfo to capture change data"
+              "yield event VenueInfoUpdated"
+            }
+            on command AddVenueLocations {
+              "add the LocationIds provided in this command to Venue.locations"
+              "set MetaInfo to capture change data"
+              "yield event VenueInfoUpdated"
+            }
+        }
 
         record ClosedState is {
             orgId: OrganizationId,
             locations: Venues.LocationId*,
             venueMeta: VenueContext.MetaInfo
         }
-		    state Closed of Venue.ClosedState is {
-		        handler ClosedVenue is {
-		            on command EstablishVenue {
-		              error "Venue already established"
-		            }
-				        on command EditVenueInfo {
-				          "set Closed info fields to EditVenueInfo.info"
-				          "yield event VenueInfoUpdated"
-				        }
-				        on command UpdateVenueStatus {
-		              "morph Venue to the state provided in UpdateVenueStatus"
-                  "set MetaInfo to capture change data"
-                  "yield event VenueInfoUpdated"
-		            }
-				        on command AddVenueLocations {
-		              "add the LocationIds provided in this command to Venue.locations"
-                  "set MetaInfo to capture change data"
-                  "yield event VenueInfoUpdated"
-		            }
-		        }
-		    }
+		    state Closed of Venue.ClosedState
+        handler ClosedVenue is {
+            on command EstablishVenue {
+              error "Venue already established"
+            }
+            on command EditVenueInfo {
+              "set Closed info fields to EditVenueInfo.info"
+              "yield event VenueInfoUpdated"
+            }
+            on command UpdateVenueStatus {
+              "morph Venue to the state provided in UpdateVenueStatus"
+              "set MetaInfo to capture change data"
+              "yield event VenueInfoUpdated"
+            }
+            on command AddVenueLocations {
+              "add the LocationIds provided in this command to Venue.locations"
+              "set MetaInfo to capture change data"
+              "yield event VenueInfoUpdated"
+            }
+        }
     }
+} with {
+  by author James
+  by author Alex
 }
+

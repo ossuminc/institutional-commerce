@@ -1,4 +1,4 @@
-type Status is any of {Draft, OnHold, Reserved, Past, Cancelled} briefly "Internal status of a Reservation."
+type Status is any of {Draft, OnHold, Reserved, Past, Cancelled} with { briefly "Internal status of a Reservation." }
 
 type Info is {
     range: ImprovingApp.TimeRange,
@@ -16,10 +16,12 @@ type UpdateInfo is {
 }
 
 type MetaInfo is {
-  createdOn: TimeStamp briefly "The Date/Time this venue was created.",
-  createdBy: MemberId briefly "The member who created this venue",
-  lastUpdated: TimeStamp briefly "The Date/Time this venue was last modified.",
-  lastUpdatedBy: MemberId briefly "The member who last modified this venue. This may also be a system user. i.e. they are two months late on payment so the system determines to suspend the venue.",
-  currentStatus: ReservationContext.Status briefly "The current state of this venue. Valid states include Draft, Active, Suspended, and Terminated",
+  createdOn: TimeStamp with { briefly "The Date/Time this venue was created." },
+  createdBy: MemberId with { briefly "The member who created this venue" },
+  lastUpdated: TimeStamp with { briefly "The Date/Time this venue was last modified." },
+  lastUpdatedBy: MemberId with { briefly "The member who last modified this venue. This may also be a system user. i.e. they are two months late on payment so the system determines to suspend the venue." },
+  currentStatus: ReservationContext.Status with { briefly "The current state of this venue. Valid states include Draft, Active, Suspended, and Terminated" },
   currentOwner: MemberId
-} briefly "Meta data kept about a reservation that the user does not directly modify. Instead the system updates this info as a Member Owner updates details in the Info type."
+} with {
+  briefly "Meta data kept about a reservation that the user does not directly modify. Instead the system updates this info as a Member Owner updates details in the Info type."
+}
