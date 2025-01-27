@@ -8,8 +8,6 @@ context VenueContext is {
     include "venueProjections"
 
     entity Venue is {
-        option event-sourced
-        option available
 
         handler VenueHandler is {
             on command EstablishVenue {
@@ -100,6 +98,9 @@ context VenueContext is {
               "yield event VenueInfoUpdated"
             }
         }
+    } with {
+      option event-sourced
+      option available
     }
 } with {
   by author James

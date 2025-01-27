@@ -1,5 +1,4 @@
 context DemoScenarioGateway is {
-  option gateway
 
   type StartScenario is command {
     numTenants: Integer,
@@ -33,4 +32,6 @@ context DemoScenarioGateway is {
    productInfo: ProductContext.ProductInfo,
    productMeta: ProductContext.ProductMetaInfo
   }
+} with {
+  option gateway
 }

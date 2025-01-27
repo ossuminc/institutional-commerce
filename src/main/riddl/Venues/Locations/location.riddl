@@ -7,9 +7,6 @@ context LocationContext is {
     include "locationMessages"
 
     entity Location is {
-        option event-sourced
-        option available
-
 		    handler LocationHandler is {
 		        on command EstablishLocation {
               "morph Location to Draft state"
@@ -88,5 +85,8 @@ context LocationContext is {
               "yield event LocationStatusUpdated"
             }
         }
+    } with {
+      option event-sourced
+      option available
     }
 }

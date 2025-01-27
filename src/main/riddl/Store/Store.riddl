@@ -58,9 +58,6 @@ context StoreContext is {
   result ProductsInStore is {products: SKU*}
 
   entity Store is {
-    option event-sourced
-    option available
-
     handler DefaultStoreHandler is {
       on command CreateStore {
         send event StoreCreated to outlet StoreEventsSource.Events
@@ -284,5 +281,8 @@ context StoreContext is {
         error "No actions are permitted on a Terminated store"
       }
     }
+  } with {
+      option event-sourced
+      option available
   }
 }

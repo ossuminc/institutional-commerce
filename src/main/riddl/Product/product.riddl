@@ -64,7 +64,6 @@ context ProductContext is {
   result TicketsForEvent is {event: EventId, tickets: SKU*}
 
   entity Product is {
-    option event-sourced
     handler ProductHandler is {
       on command ProductContext.CreateProduct {
         morph entity ProductContext.Product to state DraftProductState with record DraftProduct
@@ -197,6 +196,8 @@ context ProductContext is {
         "yield ProductInfoUpdate with only sku and name populated"
       }
     }
+  } with {
+      option event-sourced
   }
 }
 

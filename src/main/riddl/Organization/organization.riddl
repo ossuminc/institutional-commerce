@@ -9,8 +9,6 @@ context OrganizationContext is {
     include "organizationSources"
 
     entity Organization is {
-        option event-sourced
-        option available
 
         handler OrganizationHandler is {
           on command ImprovingApp.OrganizationContext.EstablishOrganization {
@@ -453,6 +451,8 @@ context OrganizationContext is {
             }
         }
     } with {
+        option event-sourced
+        option available
         by author Reid
     }
 } with {

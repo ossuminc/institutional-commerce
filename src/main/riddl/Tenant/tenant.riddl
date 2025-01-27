@@ -9,9 +9,6 @@ context TenantContext is {
     include "tenantSources"
 
     entity Tenant is {
-        option event-sourced
-        option available
-
         handler TenantHandler is {
           on command EstablishTenant {
             if "name is being used for another tenant" then
@@ -256,6 +253,9 @@ context TenantContext is {
             error "Command not allowed in Terminated state"
           }
         }
+    } with {
+      option event-sourced
+      option available
     }
 } with {
   by author James

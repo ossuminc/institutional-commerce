@@ -8,9 +8,6 @@ context ReservationContext is {
     include "reservationSources"
 
     entity Reservation is {
-        option event-sourced
-        option available
-
         handler ReservationHandler is {
           on command EstablishReservation {
             morph entity Reservation to state ImprovingApp.Events.ReservationContext.Reservation.Draft with
@@ -105,5 +102,8 @@ context ReservationContext is {
             error "No modification commands allowed in Cancelled state"
           }
         }
+    } with {
+      option event-sourced
+      option available
     }
 }

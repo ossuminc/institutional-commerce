@@ -256,9 +256,6 @@ context MemberContext is {
     }
 
     entity Member is {
-        option aggregate
-        option technology("akka")
-
         handler MemberHandler is {
           on command ImprovingApp.GatewayAPI.MemberGateway.RegisterMember {
             morph entity ImprovingApp.MemberContext.Member to state DraftMemberState with record DraftMember
@@ -414,5 +411,9 @@ context MemberContext is {
           }
         }
 
-    } with { described in file "member-entity.md" }
+    } with {
+      described in file "member-entity.md"
+      option aggregate
+      option technology("akka")
+    }
 } with { described in file "members-context.md" }

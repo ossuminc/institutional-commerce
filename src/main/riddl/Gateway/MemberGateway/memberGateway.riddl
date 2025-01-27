@@ -1,5 +1,4 @@
 context MemberGateway is {
-  option gateway
 
   type MemberType is any of {Student, FacultyStaff, Vendor, Sponsor, General, Alumni, StudentsParent, Fan}
   type MemberMap is mapping from MemberContext.MemberId to MemberInfo
@@ -87,4 +86,6 @@ context MemberGateway is {
   type MemberSuspended is event {memberId: MemberContext.MemberId, memberMeta: MemberMetaInfo}
   type TerminateMember is command {memberId: MemberContext.MemberId, actingMember: MemberContext.MemberId}
   type MemberTerminated is event {memberId: MemberContext.MemberId, memberMeta: MemberMetaInfo}
+} with {
+  option gateway
 }

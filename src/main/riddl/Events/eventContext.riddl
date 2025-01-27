@@ -46,8 +46,6 @@ context EventContext is {
   }
 
   entity Event is {
-    option is aggregate
-
     handler EventHandler is {
       on command CreateEvent {
         send event EventCreated to outlet EventEventsSource.Events
@@ -261,6 +259,8 @@ context EventContext is {
         }
     }
     // TODO: also consider postponed, delayed
+  } with {
+    option is aggregate
   }
 
   // entity Game is {

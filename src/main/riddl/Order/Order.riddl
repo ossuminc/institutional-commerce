@@ -53,8 +53,6 @@ context OrderContext is {
   event LineItemCancelled {orderId: OrderId, productId: SKU, forMemberId: MemberId}
 
   entity Order is {
-    option event-sourced
-
     handler DefaultOrderHandler is {
       on command CreateOrder {
         "morph Order into Draft state"
@@ -280,6 +278,7 @@ context OrderContext is {
     }
   }
 } with {
+  option event-sourced
   by author James
   by author Alex
 }

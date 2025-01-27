@@ -1,10 +1,9 @@
 context TestGateway is {
-  option gateway
-
   include "messages"
   // include "handler"
 
 } with {
+  option gateway
   by author Reid
   briefly "A gateway for testing Improving.app instances"
   explained as {
