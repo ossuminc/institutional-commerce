@@ -1,7 +1,7 @@
 context MemberGateway is {
 
   type MemberType is any of {Student, FacultyStaff, Vendor, Sponsor, General, Alumni, StudentsParent, Fan}
-  type MemberMap is mapping from MemberContext.MemberId to MemberInfo
+  type MemberInfoMap is mapping from MemberContext.MemberId to MemberInfo
   type NotificationPreference is any of {email, sms}
   type MemberState is any of {active, inactive, suspended, terminated}
   type MemberInfo is {

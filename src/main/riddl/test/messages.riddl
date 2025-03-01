@@ -3,11 +3,11 @@ type Percentage is range(0,100)
 
 // value
 record EntityParameters is {
-  tenants: Integer with { briefly "1" } ,
-  organizations: Integer with { briefly "1" },
-  members: Integer with { briefly "2" },
-  orders: Integer with { briefly "2" },
-  events: Integer with { briefly "10" }
+  numTenants: Integer with { briefly "1" } ,
+  numOrganizations: Integer with { briefly "1" },
+  numMembers: Integer with { briefly "2" },
+  numOrders: Integer with { briefly "2" },
+  numEvents: Integer with { briefly "10" }
 } with {
   described as {
   | These are the parameters for the CreateScenario command. They specify how

@@ -1,5 +1,4 @@
 context Vendor is {
-    type StoreId is Id( Vendor.Store )
     type CatalogId is Id( Vendor.Catalog )
     type CategoryId is Id( Vendor.Category )
     type ProductId is Id( Vendor.Product )

@@ -2,7 +2,7 @@ command EstablishOrganization is {
   orgId: OrganizationId,
   info: OrganizationContext.Info with { briefly "Details about an organization required for it to exist. See OrganizationContext.Organization.Info for details." },
   tenant: TenantId,
-  parent:  ImprovingApp.OrganizationContext.Parent?,
+  maybeBarent:  ImprovingApp.OrganizationContext.Parent?,
   members: MemberList,
   owners: OwnerList,
   contacts: ContactList,
@@ -17,7 +17,7 @@ event OrganizationEstablished is {
     briefly "Unique identifier returned by EstablishOrganization command"
   },
   info: OrganizationContext.Info,
-  parent:  ImprovingApp.OrganizationContext.Parent?,
+  maybeParent:  ImprovingApp.OrganizationContext.Parent?,
   members: MemberList,
   owners: OwnerList,
   contacts: ContactList,
@@ -155,15 +155,15 @@ result OrganizationInfo is {
 }
 query GetOrganizationParent is {orgId: OrganizationId}
 result OrganizationParent is {
-  parent: OrganizationId
+  parentOrg: OrganizationId
 }
 query GetOrganizationMembers is {orgId: OrganizationId}
 result OrganizationMembers is {
-  members: MemberId+
+  members: MemberList
 }
 query GetOrganizationOwners is {orgId: OrganizationId}
 result OrganizationOwners is {
-  owners: MemberId+
+  owners: OwnerList
 }
 query GetOrganizationContacts is {orgId: OrganizationId}
 result OrganizationContacts is {

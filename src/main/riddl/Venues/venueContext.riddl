@@ -23,7 +23,7 @@ context VenueContext is {
 
         record DraftState is {
             venueInfo: VenueContext.Info,
-            locations: Venues.LocationId*,
+            maybeLocations: Venues.LocationId*,
             venueMeta: VenueContext.MetaInfo
         }
 		    state Draft of Venue.DraftState
@@ -49,7 +49,7 @@ context VenueContext is {
 
         record OpenState is {
             venueInfo: VenueContext.Info,
-            locations: Venues.LocationId*,
+            maybeLocations: Venues.LocationId*,
             venueMeta: VenueContext.MetaInfo
         }
 		    state Open of Venue.OpenState
@@ -75,7 +75,7 @@ context VenueContext is {
 
         record ClosedState is {
             orgId: OrganizationId,
-            locations: Venues.LocationId*,
+            maybeLocations: Venues.LocationId*,
             venueMeta: VenueContext.MetaInfo
         }
 		    state Closed of Venue.ClosedState

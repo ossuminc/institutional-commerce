@@ -2,7 +2,7 @@ type OptionalInfo is {
   name: String?,
   primaryContact: Contact?,
   address: Address?,
-  orgs: ImprovingApp.OrganizationId*
+  orgs: OrganizationId*
 } with {
   briefly "Information about the tenant"
 }

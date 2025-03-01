@@ -4,7 +4,7 @@ context UserInterface is {
       briefly "Details about an organization required for it to exist. See OrganizationContext.Organization.Info for details."
     },
     tenant: TenantId,
-    parent: ImprovingApp.OrganizationContext.Parent?,
+    maybeParent: ImprovingApp.OrganizationContext.Parent?,
     members: MemberList,
     owners: OwnerList,
     contacts: ContactList,
@@ -22,7 +22,7 @@ context UserInterface is {
       briefly "Unique identifier returned by EstablishOrganization command"
     },
     info: OrganizationContext.Info,
-    parent: OrganizationContext.Parent?,
+    maybeParent: OrganizationContext.Parent?,
     members: MemberList,
     owners: OwnerList,
     contacts: ContactList,

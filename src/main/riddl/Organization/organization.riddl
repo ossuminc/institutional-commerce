@@ -23,9 +23,9 @@ context OrganizationContext is {
         record DraftOrganizationState is {
             id: OrganizationId,
             info: OrganizationContext.EditableInfo,
-            parent: OrganizationId?,
+            maybeParent: Parent?,
             members: MemberId* with { briefly "Required" } ,
-            owners: MemberId* with { briefly "Required" },
+            owners: OwnerList,
             contacts: Contact*,
             // accounts: OrganizationContext.AccountList,
             orgMeta: OrganizationContext.MetaInfo
@@ -224,9 +224,9 @@ context OrganizationContext is {
         record EstablishedOrganizationState is {
             id: OrganizationId,
             info: OrganizationContext.Info,
-            parent: OrganizationId,
-            members: MemberId+ with { briefly "Required" },
-            owners: MemberId+ with { briefly "Required" },
+            parent: Parent,
+            members: MemberList with { briefly "Required" },
+            initialOwners: MemberId+ with { briefly "Required" },
             contacts: Contact*,
             // accounts: OrganizationContext.AccountList,
             orgMeta: OrganizationContext.MetaInfo
