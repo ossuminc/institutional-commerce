@@ -17,17 +17,17 @@ context OrganizationsForMembersAttendingEventsProjections is  {
     }
     handler OrganizationsForMembersAttendingEventsViewHandler is {
         on event ImprovingApp.OrganizationContext.OrganizationEstablished {
-          "create row in org table with orgId set to OrganizationEstablished.info.orgId"
-          "set row's attendingMemberOrgName to OrganizationEstablished.info.name"
+          prompt "create row in org table with orgId set to OrganizationEstablished.info.orgId"
+          prompt "set row's attendingMemberOrgName to OrganizationEstablished.info.name"
         }
         on event OrganizationTerminated {
-          "remove row from table"
+          prompt "remove row from table"
         }
         on event MemberContext.MemberRegistered {
-          "create rows in member table with attendingMember set to MemberRegistered.id"
-          "set previous row's attendingMemberName to concatenated MemberRegistered.info.firstName and MemberRegistered.info.lastName"
-          "create row in org-member table with attendingMemberOrgId set to MemberRegistered.info.organizationMembership.head"
-          "set attendingMemberId to MemberRegistered.memberId"
+          prompt "create rows in member table with attendingMember set to MemberRegistered.id"
+          prompt "set previous row's attendingMemberName to concatenated MemberRegistered.info.firstName and MemberRegistered.info.lastName"
+          prompt "create row in org-member table with attendingMemberOrgId set to MemberRegistered.info.organizationMembership.head"
+          prompt "set attendingMemberId to MemberRegistered.memberId"
         }
         //on event MembersAddedToOrganization {
         //    then "create rows in org-member table with attendingMemberOrg set to MembersAddedToOrganization.orgId and attendingMembers set to MembersAddedToOrganization.newMembers"
@@ -36,39 +36,39 @@ context OrganizationsForMembersAttendingEventsProjections is  {
         //    then "remove rows in org-member table with attendingMemberOrg set to MembersRemovedFromOrganization.orgId and attendingMembers set to MembersRemovedFromOrganization.newMembers"
         //}
         on event EventScheduled {
-          "create row in event table with event id set to to EventScheduled.eventId"
-          "set event_name to EventScheduled.info.eventName"
+          prompt "create row in event table with event id set to to EventScheduled.eventId"
+          prompt "set event_name to EventScheduled.info.eventName"
         }
         //on event EventCancelled {
         //    then "remove row in event table with event corresponding to EventCancelled.eventId"
         //}
         on event ProductCreated {
-          "if product is ticket, create row in ticket-event table with sku as ticketSku & productDetails.eventId as event"
+          prompt "if product is ticket, create row in ticket-event table with sku as ticketSku & productDetails.eventId as event"
         }
         on event ProductActivated {
-          "update row in ticket-event table with the Active status"
+          prompt "update row in ticket-event table with the Active status"
         }
         on event ProductInactivated {
-          "update row in ticket-event table with the Inactive status"
+          prompt "update row in ticket-event table with the Inactive status"
         }
         on event ProductDeleted {
-          "remove row in ticket-event table"
+          prompt "remove row in ticket-event table"
         }
         on event OrderCreated {
-          "for each OrderCreated.orderInfo.lineItem that has a SKU in event-ticket table, create row in ticket-member table with OrderCreated.meta.memberId as attendingMember & sku as ticketSku"
+          prompt "for each OrderCreated.orderInfo.lineItem that has a SKU in event-ticket table, create row in ticket-member table with OrderCreated.meta.memberId as attendingMember & sku as ticketSku"
         }
         on event LineItemOrdered {
-          "create row in ticket-member table with ticketSku set to LineItemOrdered.productId"
-          "set attendingMemberId to LineItemOrdered.forMemberId"
-          "set orderId to LineItemOrdered.orderId"
+          prompt "create row in ticket-member table with ticketSku set to LineItemOrdered.productId"
+          prompt "set attendingMemberId to LineItemOrdered.forMemberId"
+          prompt "set orderId to LineItemOrdered.orderId"
         }
         on event LineItemCancelled {
-          "remove row in ticket-member table"
+          prompt "remove row in ticket-member table"
         }
         on query FindOrgsByMembersForEvents {
-          "left join event table filtered by FindOrgsByMembersForEvents.events to ticket-event table"
-          "left join table found in previous operation to ticket-member, org-member, org, member tables"
-          "return OrgsByMembersForEvents containing results in the form of events keyed by members keyed by orgs"
+          prompt "left join event table filtered by FindOrgsByMembersForEvents.events to ticket-event table"
+          prompt "left join table found in previous operation to ticket-member, org-member, org, member tables"
+          prompt "return OrgsByMembersForEvents containing results in the form of events keyed by members keyed by orgs"
         }
     }
   }

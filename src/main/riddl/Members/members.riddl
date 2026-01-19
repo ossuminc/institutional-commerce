@@ -289,16 +289,18 @@ context MemberContext is {
             error "Member has already been registered."
           }
           on command ImprovingApp.MemberContext.ActivateMember {
-            if "all required fields in requiredInfo are not None or Empty" then
-              send event MemberRegistered to outlet MemberEventsSource.Events
-              morph entity Member to state RegisteredMemberState with record RegisteredMember
-            else {
-              if "all required fields in state are not present" then
+            match "activation validation" {
+              case "all required fields in requiredInfo are not None or Empty" {
+                send event MemberRegistered to outlet MemberEventsSource.Events
+                morph entity Member to state RegisteredMemberState with record RegisteredMember
+              }
+              case "all required fields in state are not present" {
                 error "state is not sufficiently filled out to activate organization"
-              else
-                "do nothing"
-              end
-            } end
+              }
+              default {
+                prompt "do nothing"
+              }
+            }
           }
           on command EditMemberInfo {
             set field Member.DraftMemberState.info to "MemberContext.EditableInfo"
@@ -350,10 +352,11 @@ context MemberContext is {
                 send event MemberInfoEdited to outlet ImprovingApp.MemberContext.MemberEventsSource.Events
             }
             on command ImprovingApp.MemberContext.SuspendMember {
-              if "all required fields in requiredInfo are not None or Empty" then {
+              let fieldsValid = "all required fields in requiredInfo are not None or Empty"
+              when fieldsValid then
                 send event MemberSuspended to outlet MemberEventsSource.Events
-                  become entity Member to handler SuspendedMemberHandler
-                }
+                become entity Member to handler SuspendedMemberHandler
+              end
             }
             on command ImprovingApp.MemberContext.TerminateMember {
               set field RegisteredMemberState.meta to "record MemberContext.MetaInfo"

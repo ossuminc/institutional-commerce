@@ -18,15 +18,16 @@ projector TenantViews is {
            set field TenantFields.tenantInfo to "TenantEstablished.info"
         }
         on event TenantContext.InfoEdited {
-           "find tenant set to TenantEstablished.tenantId"
-           if "name has changed" then {
-            set field TenantFields.tenantName to "TenantEstablished.info.name"
-            set field TenantFields.tenantInfo to "TenantEstablished.info"
-          }
+           prompt "find tenant set to TenantEstablished.tenantId"
+           let nameChanged = "name has changed"
+           when nameChanged then
+             set field TenantFields.tenantName to "TenantEstablished.info.name"
+             set field TenantFields.tenantInfo to "TenantEstablished.info"
+           end
         }
         on query TenantContext.FindTenantByName {
-          "find by member equals FindTenantsByName.name"
-          "return TenantByName containing tenant and its info - or NoTenantWithName if empty"
+          prompt "find by member equals FindTenantsByName.name"
+          prompt "return TenantByName containing tenant and its info - or NoTenantWithName if empty"
         }
     }
 }

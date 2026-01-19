@@ -10,13 +10,13 @@ projector VenuesView is {
           set field VenuesFields.venueId to "VenueEstablished.VenueId"
         }
         on event LocationEstablished {
-          if "LocationEstablished.locationInfo.venueId not exists in this projector" then
+          let venueExists = "LocationEstablished.locationInfo.venueId exists in this projector"
+          when !venueExists then
             error "Location cannot be established because the venueId requested does not exist already"
-          else
-            if "LocationEstablished.locationInfo.venueId exists in this projector" then
-              set field VenuesFields.minCapacity to "min(LocationEstablished.locationInfo.capacity, minCapacity)"
-              set field VenuesFields.maxCapacity to "max(LocationEstablished.locationInfo.capacity, maxCapacity)"
-            else ??? end
+          end
+          when venueExists then
+            set field VenuesFields.minCapacity to "min(LocationEstablished.locationInfo.capacity, minCapacity)"
+            set field VenuesFields.maxCapacity to "max(LocationEstablished.locationInfo.capacity, maxCapacity)"
           end
         }
 // Queries are not supported by Venues.

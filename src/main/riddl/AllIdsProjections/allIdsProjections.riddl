@@ -27,13 +27,13 @@ context AllIdsProjections is  {
     handler AllTenantIdsViewHandler is {
 
         on event TenantEstablished {
-          "create row with tenant set to TenantEstablished.tenantId and tenantStatus to Draft"
+          prompt "create row with tenant set to TenantEstablished.tenantId and tenantStatus to Draft"
         }
         //on event TenantContext.StatusUpdated {
         //    then "update row with tenant set to StatusUpdated.tenantId to tenantStatus with StatusUpdated.newStatus"
         //}
         on query GetAllTenantIds {
-          "reply with AllTenantIds packed with entire table filtered by tenantStatus == Active"
+          prompt "reply with AllTenantIds packed with entire table filtered by tenantStatus == Active"
         }
     }
   }
@@ -54,7 +54,7 @@ context AllIdsProjections is  {
         //    then "update row with org set to OrganizationStatusUpdated.orgId to orgStatus with OrganizationStatusUpdated.newStatus"
         //}
         on query GetAllOrgIds {
-          "reply with AllOrgIds packed with entire table filtered by orgStatus == Active"
+          prompt "reply with AllOrgIds packed with entire table filtered by orgStatus == Active"
         }
     }
   }
@@ -85,7 +85,7 @@ context AllIdsProjections is  {
         //    then "update row with event set to EventEnded.eventId to eventStatus with Status.Past"
         //}
         on query GetAllEventIds {
-          "reply with AllEventIds packed with entire table filtered by eventStatus == Scheduled"
+          prompt "reply with AllEventIds packed with entire table filtered by eventStatus == Scheduled"
         }
     }
   }
@@ -103,7 +103,7 @@ context AllIdsProjections is  {
         //    then "update row with member set to MemberStatusUpdated.memberId to memberStatus with MemberStatusUpdated.newStatus"
         //}
         on query GetAllMemberIds {
-          "reply with AllMemberIds packed with entire table"
+          prompt "reply with AllMemberIds packed with entire table"
         }
     }
   }
@@ -114,10 +114,10 @@ context AllIdsProjections is  {
     }
     handler AllStoreIdsViewHandler is {
         on event StoreCreated {
-          "create rows with store set to StoreCreated.storeId"
+          prompt "create rows with store set to StoreCreated.storeId"
         }
         on query GetAllStoreIds {
-          "reply with AllStoreIds packed with entire table"
+          prompt "reply with AllStoreIds packed with entire table"
         }
     }
   }
@@ -128,10 +128,10 @@ context AllIdsProjections is  {
     }
     handler AllSkusViewHandler is {
         on event ProductCreated {
-          "create rows with sku set to ProductCreated.sku"
+          prompt "create rows with sku set to ProductCreated.sku"
         }
         on query GetAllSkus {
-          "reply with AllSkus packed with entire table"
+          prompt "reply with AllSkus packed with entire table"
         }
     }
   }

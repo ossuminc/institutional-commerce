@@ -42,116 +42,116 @@ context OrganizationContext is {
               send event OrganizationInfoEdited to outlet OrganizationEventsSource.Source
             }
             on command UpdateParent {
-              if "successful" then {
-                "Update the parent field with the value provided in UpdateParent"
-                // TODO: should adjust this to reflect design pattern to provide children in a projector.
-                // TODO: The next two AND statements would be handled in the projection handler for ParentUpdated event
-                "remove organizationId from the list of children in the 'old' parent"
-                "add organizationId to the list of children in the 'new' parent"
-                "set MetaInfo to capture change data"
-                "yield event ParentUpdated"
-              } else {
-                if "newParent exists outside the bounds of the root organization that contains organizationId" then {
+              match "UpdateParent validation" {
+                case "newParent exists outside the bounds of the root organization that contains organizationId" {
                   error "Organization cannot leave the bounds of the root organization that it belongs to"
-                } else ??? end
-                if "newParent exists below organizationId (child, grandchild, etc.) in the organizational hierarchy"
-                then  {
+                }
+                case "newParent exists below organizationId (child, grandchild, etc.) in the organizational hierarchy" {
                   error "New Parent cannot be a generational child of the organization being modified"
-                } else ??? end
-                if "editingMember is not Authorized" then {
+                }
+                case "editingMember is not Authorized" {
                   error "EditingMember is not authorized to make this change."
-                } else ??? end
-              } end
+                }
+                default {
+                  prompt "Update the parent field with the value provided in UpdateParent"
+                  // TODO: should adjust this to reflect design pattern to provide children in a projector.
+                  // TODO: The next two AND statements would be handled in the projection handler for ParentUpdated event
+                  prompt "remove organizationId from the list of children in the 'old' parent"
+                  prompt "add organizationId to the list of children in the 'new' parent"
+                  prompt "set MetaInfo to capture change data"
+                  prompt "yield event ParentUpdated"
+                }
+              }
             }
             on command AddMembersToOrganization {
-              if "successful" then {
-                "Merge new members into the member list. Duplicates not allowed."
-                "set MetaInfo to capture change data"
-                "emit MembersAddedToOrganization event"
-              } else ??? end
-              // Restrictions not implemented yet
-              // example NewMemberDoesNotMeetRestrictions is {
-              //     given "Member does not meet qualifictions to join organization"
-              //     then "Place rejected member in dead letter queue and process remaining members"
-              //     and "Consider how to notify of partial success" // TODO: discuss how this might work
-              // }
-              if "organizationId is a private organization and updatingMember is not an admin for organizationId" then {
-                error "Only Admins for organizationId can admit new members"
-              } else ??? end
-              if "Member in newMembers list is in state suspended" then {
-                "place suspended member in dead letter queue and process remaining members"
-                "Consider how to notify of partial success" // TODO: discuss how this might work
-              } else ??? end
-              if "editingMember is not Authorized to add members to this organization" then {
-                error "EditingMember is not authorized to make this change."
-              } else ??? end
+              match "AddMembersToOrganization validation" {
+                case "organizationId is a private organization and updatingMember is not an admin for organizationId" {
+                  error "Only Admins for organizationId can admit new members"
+                }
+                case "Member in newMembers list is in state suspended" {
+                  prompt "place suspended member in dead letter queue and process remaining members"
+                  prompt "Consider how to notify of partial success" // TODO: discuss how this might work
+                }
+                case "editingMember is not Authorized to add members to this organization" {
+                  error "EditingMember is not authorized to make this change."
+                }
+                default {
+                  prompt "Merge new members into the member list. Duplicates not allowed."
+                  prompt "set MetaInfo to capture change data"
+                  prompt "emit MembersAddedToOrganization event"
+                }
+              }
             }
             on command RemoveMembersFromOrganization {
-              if "editingMember is authorized to remove members from this organization" then {
-                "membersToRemove are purged from memberList"
-                "set MetaInfo to capture change data"
-                "yield MembersRemovedFromOrganization()"
-              } else {
+              let authorized = "editingMember is authorized to remove members from this organization"
+              when authorized then
+                prompt "membersToRemove are purged from memberList"
+                prompt "set MetaInfo to capture change data"
+                prompt "yield MembersRemovedFromOrganization()"
+              end
+              when !authorized then
                 error "EditingMember is not authorized to make this change."
-              } end
-            }
-            on command AddOwnersToOrganization {
-              if "successful" then
-                "Merge new owners into the owner list. Duplicates not allowed."
-                "set MetaInfo to capture change data"
-                "emit OwnersAddedToOrganization event"
-              else
-                if "Member in ownersToAdd is not in memberList of organizationId" then {
-                  "Place non-member owner in dead letter queue and finish processing remaining member owners"
-                  "Consider how to notify of partial success" // TODO: discuss how this might work
-                } else ??? end
-                if "Member in ownersToAdd is in state Suspended" then {
-                  "Place suspended owner in dead letter queue and finish processing remaining member owners"
-                  "Consider how to notify of partial success" // TODO: discuss how this might work
-                } else ??? end
-                if "Member in ownersToAdd is a type that is not allowed to be an owner" then {
-                  "Place non-compliant owner in dead letter queue and finish processing remaining member owners"
-                  "Consider how to notify of partial success" // TODO: discuss how this might work
-                } else ??? end
-                if "editingMember is not Authorized" then {
-                  error "EditingMember is not authorized to make this change."
-                } else ??? end
               end
             }
-            on command RemoveOwnersFromOrganization {
-              if "successful" then
-                "ownersToRemove are purged from memberList"
-                "set MetaInfo to capture change data"
-                "yield OwnersRemovedFromOrganization()"// TODO
-              else
-                if "editingMember is not Authorized" then {
+            on command AddOwnersToOrganization {
+              match "AddOwnersToOrganization validation" {
+                case "Member in ownersToAdd is not in memberList of organizationId" {
+                  prompt "Place non-member owner in dead letter queue and finish processing remaining member owners"
+                  prompt "Consider how to notify of partial success" // TODO: discuss how this might work
+                }
+                case "Member in ownersToAdd is in state Suspended" {
+                  prompt "Place suspended owner in dead letter queue and finish processing remaining member owners"
+                  prompt "Consider how to notify of partial success" // TODO: discuss how this might work
+                }
+                case "Member in ownersToAdd is a type that is not allowed to be an owner" {
+                  prompt "Place non-compliant owner in dead letter queue and finish processing remaining member owners"
+                  prompt "Consider how to notify of partial success" // TODO: discuss how this might work
+                }
+                case "editingMember is not Authorized" {
                   error "EditingMember is not authorized to make this change."
-                } else ??? end
+                }
+                default {
+                  prompt "Merge new owners into the owner list. Duplicates not allowed."
+                  prompt "set MetaInfo to capture change data"
+                  prompt "emit OwnersAddedToOrganization event"
+                }
+              }
+            }
+            on command RemoveOwnersFromOrganization {
+              let authorized = "editingMember is authorized"
+              when authorized then
+                prompt "ownersToRemove are purged from memberList"
+                prompt "set MetaInfo to capture change data"
+                prompt "yield OwnersRemovedFromOrganization()"// TODO
+              end
+              when !authorized then
+                error "EditingMember is not authorized to make this change."
               end
             }
             on command UpdateOrganizationContacts {
-              if "successful" then
-                "Merge new contacts into the contacts list. Duplicates not allowed."
-                "set MetaInfo to capture change data"
-                "emit ContactsAddedToOrganization event"
-              else
-                if "Member in contactsToAdd is not in memberList of organizationId" then
-                  "Place non-member contact in dead letter queue and finish processing remaining member contacts"
-                  "Consider how to notify of partial success" // TODO: discuss how this might work
-                else ??? end
-                if "Member in contactsToAdd is in state Suspended" then
-                  "Place suspended contact in dead letter queue and finish processing remaining member owners"
-                  "Consider how to notify of partial success" // TODO: discuss how this might work
-                else ??? end
-                if "Member in contactsToAdd is a type that is not allowed to be a contact" then
-                    //Only members of type ________ can be contacts for an organization???
-                    "Place non-compliant contact in dead letter queue and finish processing remaining member contacts"
-                    "Consider how to notify of partial success" // TODO: discuss how this might work
-                else ??? end
-                if "editingMember is not Authorized" then
+              match "UpdateOrganizationContacts validation" {
+                case "Member in contactsToAdd is not in memberList of organizationId" {
+                  prompt "Place non-member contact in dead letter queue and finish processing remaining member contacts"
+                  prompt "Consider how to notify of partial success" // TODO: discuss how this might work
+                }
+                case "Member in contactsToAdd is in state Suspended" {
+                  prompt "Place suspended contact in dead letter queue and finish processing remaining member owners"
+                  prompt "Consider how to notify of partial success" // TODO: discuss how this might work
+                }
+                case "Member in contactsToAdd is a type that is not allowed to be a contact" {
+                  //Only members of type ________ can be contacts for an organization???
+                  prompt "Place non-compliant contact in dead letter queue and finish processing remaining member contacts"
+                  prompt "Consider how to notify of partial success" // TODO: discuss how this might work
+                }
+                case "editingMember is not Authorized" {
                   error "EditingMember is not authorized to make this change."
-                else ??? end
-              end
+                }
+                default {
+                  prompt "Merge new contacts into the contacts list. Duplicates not allowed."
+                  prompt "set MetaInfo to capture change data"
+                  prompt "emit ContactsAddedToOrganization event"
+                }
+              }
             }
             // on command UpdateOrganizationAccounts {
             //     example NotAuthorized is {
@@ -160,61 +160,62 @@ context OrganizationContext is {
             //     }
             // }
             on command ActivateOrganization {
-              if "all required fields in info are not None or Empty and required non-info fields are present" then
+              let fieldsValid = "all required fields in info are not None or Empty and required non-info fields are present"
+              when fieldsValid then
                 send event OrganizationEstablished to outlet OrganizationEvents.Events
                 morph entity Organization to state EstablishedOrganization with record EstablishedOrganizationState
-              else
-                if "all required fields in state are not present" then {
-                  "state is not sufficiently filled out to activate organization"
-                } else ??? end
+              end
+              when !fieldsValid then
+                prompt "state is not sufficiently filled out to activate organization"
               end
             }
             on query GetOrganizationInfo {
               reply record OrganizationInfo
             }
             on query GetOrganizationParent {
-              if "Parent field is present (non-empty)" then
+              let parentPresent = "Parent field is present (non-empty)"
+              when parentPresent then
                 reply result OrganizationParent
-              else
-                if "in Draft state and Parent is not empty in editableInfo" then
-                  error "Parent field is not present in current state of Draft"
-
+              end
+              when !parentPresent then
+                error "Parent field is not present in current state of Draft"
               end
             }
             on query GetOrganizationMembers {
-              if "Members field is present (non-empty)" then
+              let membersPresent = "Members field is present (non-empty)"
+              when membersPresent then
                 reply result OrganizationMembers
-              else
-                if "in Draft state and Members is not empty in editableInfo" then
-                  error "Members field is not present in current state of Draft"
-                else ??? end
+              end
+              when !membersPresent then
+                error "Members field is not present in current state of Draft"
               end
             }
             on query GetOrganizationOwners {
-              if "in Draft state and Owners is not empty in editableInfo" then
+              let ownersPresent = "Owners field is present (non-empty)"
+              when ownersPresent then
+                reply record OrganizationOwners
+              end
+              when !ownersPresent then
                 error "Owners field is not present in current state of Draft"
-              else
-                if "Owners field is present (non-empty)" then
-                   reply record OrganizationOwners
-                else ??? end
               end
             }
             on query GetOrganizationContacts {
-              if "in Draft state and contacts is not empty in editableInfo" then
+              let contactsPresent = "Contacts field is present (non-empty)"
+              when contactsPresent then
+                reply result OrganizationContacts
+              end
+              when !contactsPresent then
                 error "Contacts field is not present in current state of Draft"
-              else
-                if "Contacts field is present (non-empty)" then
-                   reply result OrganizationContacts
-                else ??? end
               end
             }
             on query GetOrganizationMeta {
               reply with result OrganizationMeta
             }
              on query GetOrganizationState {
-               if "State field is present (non-empty)" then
+               let statePresent = "State field is present (non-empty)"
+               when statePresent then
                  reply with record OrganizationState
-               else ??? end
+               end
             }
             on other {
               error "No other commands allowed in Draft state"
@@ -242,113 +243,127 @@ context OrganizationContext is {
               send event OrganizationInfoEdited to outlet OrganizationEventsSource.Source
             }
             on command ImprovingApp.OrganizationContext.UpdateParent {
-              if "editingMember is not Authorized" then
-                error "EditingMember is not authorized to make this change."
-              else
-                if "newParent exists below organizationId (child, grandchild, etc.) in the organizational hierarchy" then
+              match "UpdateParent validation" {
+                case "editingMember is not Authorized" {
+                  error "EditingMember is not authorized to make this change."
+                }
+                case "newParent exists below organizationId (child, grandchild, etc.) in the organizational hierarchy" {
                   error "New Parent cannot be a generational child of the organization being modified"
-                else
-                  if "newParent exists outside the bounds of the root organization that contains organizationId" then
-                    error "Organization cannot leave the bounds of the root organization that it belongs to"
-                  else
-                    "set Active Organization's parent to the organizationId provided in UpdateParent"
-                    "set MetaInfo to capture change data"
-                    "yield event ParentUpdated"
-                  end
-                end
-              end
+                }
+                case "newParent exists outside the bounds of the root organization that contains organizationId" {
+                  error "Organization cannot leave the bounds of the root organization that it belongs to"
+                }
+                default {
+                  prompt "set Active Organization's parent to the organizationId provided in UpdateParent"
+                  prompt "set MetaInfo to capture change data"
+                  prompt "yield event ParentUpdated"
+                }
+              }
             }
             on command ImprovingApp.OrganizationContext.AddMembersToOrganization {
-              if "Member does not meet qualifictions to join organization" then
-                "Place rejected member in dead letter queue and process remaining members"
-                "Consider how to notify of partial success" // TODO: discuss how this might work
-                stop
-              else ??? end
-              if "organizationId is a private organization and updatingMember is not an admin for organizationId" then
-                error "Only Admins for organizationId can admit new members"
-                stop
-              else ??? end
-              if "Member in newMembers list is in state suspended" then
-                 "place suspended member in dead letter queue and process remaining members"
-                 "Consider how to notify of partial success" // TODO: discuss how this might work
-                 stop
-              else ??? end
-              if "editingMember is not Authorized" then
-                error "EditingMember is not authorized to make this change."
-              else
-                "Merge new members into the member list. Duplicates not allowed."
-                "set MetaInfo to capture change data"
-                "emit MembersAddedToOrganization event"
-              end
+              match "AddMembersToOrganization validation" {
+                case "Member does not meet qualifictions to join organization" {
+                  prompt "Place rejected member in dead letter queue and process remaining members"
+                  prompt "Consider how to notify of partial success" // TODO: discuss how this might work
+                  stop
+                }
+                case "organizationId is a private organization and updatingMember is not an admin for organizationId" {
+                  error "Only Admins for organizationId can admit new members"
+                  stop
+                }
+                case "Member in newMembers list is in state suspended" {
+                  prompt "place suspended member in dead letter queue and process remaining members"
+                  prompt "Consider how to notify of partial success" // TODO: discuss how this might work
+                  stop
+                }
+                case "editingMember is not Authorized" {
+                  error "EditingMember is not authorized to make this change."
+                }
+                default {
+                  prompt "Merge new members into the member list. Duplicates not allowed."
+                  prompt "set MetaInfo to capture change data"
+                  prompt "emit MembersAddedToOrganization event"
+                }
+              }
             }
             on command ImprovingApp.OrganizationContext.RemoveMembersFromOrganization {
-              if "editingMember is not Authorized" then
-                 error "EditingMember is not authorized to make this change."
-                 stop
-              else
-                "membersToRemove are purged from memberList"
-                "set MetaInfo to capture change data"
-                "yield MembersRemovedFromOrganization()"// TODO
+              let authorized = "editingMember is authorized"
+              when !authorized then
+                error "EditingMember is not authorized to make this change."
+                stop
+              end
+              when authorized then
+                prompt "membersToRemove are purged from memberList"
+                prompt "set MetaInfo to capture change data"
+                prompt "yield MembersRemovedFromOrganization()"// TODO
               end
             }
             on command ImprovingApp.OrganizationContext.AddOwnersToOrganization {
-              if "Member in ownersToAdd is not in memberList of organizationId" then
-                 "Place non-member owner in dead letter queue and finish processing remaining member owners"
-                 "Consider how to notify of partial success" // TODO: discuss how this might work
-                 stop
-              else ??? end
-              if "Member in ownersToAdd is in state Suspended" then
-                 "Place suspended owner in dead letter queue and finish processing remaining member owners"
-                 "Consider how to notify of partial success" // TODO: discuss how this might work
-                 stop
-              else ??? end
-              // Only members of type ________ can be owners of an organization???
-              if "Member in ownersToAdd is a type that is not allowed to be an owner" then
-                "Place non-compliant owner in dead letter queue and finish processing remaining member owners"
-                "Consider how to notify of partial success" // TODO: discuss how this might work
-                stop
-              else ??? end
-              if "editingMember is not Authorized" then
-                 error "EditingMember is not authorized to make this change."
-              else
-                 "Merge new owners into the owner list. Duplicates not allowed."
-                 "set MetaInfo to capture change data"
-                 "emit OwnersAddedToOrganization event"
-              end
+              match "AddOwnersToOrganization validation" {
+                case "Member in ownersToAdd is not in memberList of organizationId" {
+                  prompt "Place non-member owner in dead letter queue and finish processing remaining member owners"
+                  prompt "Consider how to notify of partial success" // TODO: discuss how this might work
+                  stop
+                }
+                case "Member in ownersToAdd is in state Suspended" {
+                  prompt "Place suspended owner in dead letter queue and finish processing remaining member owners"
+                  prompt "Consider how to notify of partial success" // TODO: discuss how this might work
+                  stop
+                }
+                // Only members of type ________ can be owners of an organization???
+                case "Member in ownersToAdd is a type that is not allowed to be an owner" {
+                  prompt "Place non-compliant owner in dead letter queue and finish processing remaining member owners"
+                  prompt "Consider how to notify of partial success" // TODO: discuss how this might work
+                  stop
+                }
+                case "editingMember is not Authorized" {
+                  error "EditingMember is not authorized to make this change."
+                }
+                default {
+                  prompt "Merge new owners into the owner list. Duplicates not allowed."
+                  prompt "set MetaInfo to capture change data"
+                  prompt "emit OwnersAddedToOrganization event"
+                }
+              }
             }
             on command ImprovingApp.OrganizationContext.RemoveOwnersFromOrganization {
-              if "editingMember is not Authorized" then
-                 error "EditingMember is not authorized to make this change."
-              else
-                "ownersToRemove are purged from memberList"
-                "set MetaInfo to capture change data"
-                "yield OwnersRemovedFromOrganization()"// TODO
+              let authorized = "editingMember is authorized"
+              when !authorized then
+                error "EditingMember is not authorized to make this change."
+              end
+              when authorized then
+                prompt "ownersToRemove are purged from memberList"
+                prompt "set MetaInfo to capture change data"
+                prompt "yield OwnersRemovedFromOrganization()"// TODO
               end
             }
             on command ImprovingApp.OrganizationContext.UpdateOrganizationContacts {
-              if "Member in contactsToAdd is not in memberList of organizationId" then
-                "Place non-member contact in dead letter queue and finish processing remaining member contacts"
-                 "Consider how to notify of partial success" // TODO: discuss how this might work
-                 stop
-              else ??? end
-              if "Member in contactsToAdd is in state Suspended" then
-                "Place suspended contact in dead letter queue and finish processing remaining member owners"
-                "Consider how to notify of partial success" // TODO: discuss how this might work
-                stop
-              else ??? end
-              //Only members of type ________ can be contacts for an organization???
-              if "Member in contactsToAdd is a type that is not allowed to be a contact" then
-                "Place non-compliant contact in dead letter queue and finish processing remaining member contacts"
-                "Consider how to notify of partial success" // TODO: discuss how this might work
-                stop
-              else ??? end
-              if "editingMember is not Authorized" then
-                error "EditingMember is not authorized to make this change."
-              else
-                "Merge new contacts into the contacts list. Duplicates not allowed."
-                "set MetaInfo to capture change data"
-                "emit ContactsAddedToOrganization event"
-              end
+              match "UpdateOrganizationContacts validation" {
+                case "Member in contactsToAdd is not in memberList of organizationId" {
+                  prompt "Place non-member contact in dead letter queue and finish processing remaining member contacts"
+                  prompt "Consider how to notify of partial success" // TODO: discuss how this might work
+                  stop
+                }
+                case "Member in contactsToAdd is in state Suspended" {
+                  prompt "Place suspended contact in dead letter queue and finish processing remaining member owners"
+                  prompt "Consider how to notify of partial success" // TODO: discuss how this might work
+                  stop
+                }
+                //Only members of type ________ can be contacts for an organization???
+                case "Member in contactsToAdd is a type that is not allowed to be a contact" {
+                  prompt "Place non-compliant contact in dead letter queue and finish processing remaining member contacts"
+                  prompt "Consider how to notify of partial success" // TODO: discuss how this might work
+                  stop
+                }
+                case "editingMember is not Authorized" {
+                  error "EditingMember is not authorized to make this change."
+                }
+                default {
+                  prompt "Merge new contacts into the contacts list. Duplicates not allowed."
+                  prompt "set MetaInfo to capture change data"
+                  prompt "emit ContactsAddedToOrganization event"
+                }
+              }
             }
             // on command UpdateOrganizationAccounts {
             //     example NotAuthorized is {

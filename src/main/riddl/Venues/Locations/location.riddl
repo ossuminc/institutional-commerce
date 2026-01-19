@@ -9,10 +9,10 @@ context LocationContext is {
     entity Location is {
 		    handler LocationHandler is {
 		        on command EstablishLocation {
-              "morph Location to Draft state"
-              "Copy info field from the command into Draft.locationInfo field"
-              "adjust meta fields to reflect the change set"
-              "yield event LocationEstablished"
+              prompt "morph Location to Draft state"
+              prompt "Copy info field from the command into Draft.locationInfo field"
+              prompt "adjust meta fields to reflect the change set"
+              prompt "yield event LocationEstablished"
 		        }
 		        on other {
 		          error "Only EstablishLocation command is allowed in the default state"
@@ -29,18 +29,20 @@ context LocationContext is {
               error "Location already established"
             }
             on command ImprovingApp.Venues.LocationContext.EditLocationInfo {
-              "set Draft info fields to EditLocationInfo.info"
-              "yield event LocationInfoUpdated"
+              prompt "set Draft info fields to EditLocationInfo.info"
+              prompt "yield event LocationInfoUpdated"
             }
             on command ImprovingApp.Venues.LocationContext.UpdateLocationStatus {
-              "morph Location to the state provided in UpdateVenueStatus"
-              "set MetaInfo to capture change data"
-              "yield event VenueInfoUpdated"
+              prompt "morph Location to the state provided in UpdateVenueStatus"
+              prompt "set MetaInfo to capture change data"
+              prompt "yield event VenueInfoUpdated"
             }
             on query GetLocationVenue {
-              if "GetLocationVenue.locationId exists as an entity" then
-                "yield event LocationVenue"
-              else
+              let locationExists = "GetLocationVenue.locationId exists as an entity"
+              when locationExists then
+                prompt "yield event LocationVenue"
+              end
+              when !locationExists then
                 error "LocationId not found as requested"
               end
             }
@@ -56,13 +58,13 @@ context LocationContext is {
               error "Location already established"
             }
             on command ImprovingApp.Venues.LocationContext.EditLocationInfo {
-              "set OnHold info fields to EditLocationInfo.info"
-              "yield event LocationInfoUpdated"
+              prompt "set OnHold info fields to EditLocationInfo.info"
+              prompt "yield event LocationInfoUpdated"
             }
             on command ImprovingApp.Venues.LocationContext.UpdateLocationStatus {
-              "morph Location to the state provided in UpdateLocationStatus"
-              "set MetaInfo to capture change data"
-              "yield event LocationStatusUpdated"
+              prompt "morph Location to the state provided in UpdateLocationStatus"
+              prompt "set MetaInfo to capture change data"
+              prompt "yield event LocationStatusUpdated"
             }
         }
 
@@ -76,13 +78,13 @@ context LocationContext is {
               error "Location already established"
             }
             on command ImprovingApp.Venues.LocationContext.EditLocationInfo {
-              "set OnHold info fields to EditLocationInfo.info"
-              "yield event LocationInfoUpdated"
+              prompt "set OnHold info fields to EditLocationInfo.info"
+              prompt "yield event LocationInfoUpdated"
             }
             on command ImprovingApp.Venues.LocationContext.UpdateLocationStatus {
-              "morph Location to the state provided in UpdateLocationStatus"
-              "set MetaInfo to capture change data"
-              "yield event LocationStatusUpdated"
+              prompt "morph Location to the state provided in UpdateLocationStatus"
+              prompt "set MetaInfo to capture change data"
+              prompt "yield event LocationStatusUpdated"
             }
         }
     } with {
