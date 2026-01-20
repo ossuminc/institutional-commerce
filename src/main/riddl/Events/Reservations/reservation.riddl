@@ -78,7 +78,8 @@ context ReservationContext is {
             on command ImprovingApp.Events.ReservationContext.UpdateReservationStatus {
               prompt "morph Reservation to the state provided in UpdateReservationStatus"
               prompt "set MetaInfo to capture change data"
-              "yield event ReservationStatusUpdated"			            }
+              prompt "yield event ReservationStatusUpdated"
+            }
         }
 
         record PastState {

@@ -24,6 +24,14 @@ sink MemberEventsSink is {
     inlet Events is type MemberEvent
 }
 
+source MemberResultsSource is {
+    outlet Results is type MemberQueryResult
+}
+
+type MemberQueryResult is one of {
+    ImprovingApp.MemberContext.MemberData
+}
+
 type MemberCommand is one of {
     ImprovingApp.MemberContext.RegisterMember,
     ImprovingApp.MemberContext.ActivateMember,

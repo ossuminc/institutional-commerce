@@ -10,13 +10,13 @@ context EventContext is {
   function IncrementDelayedEventTime is {
     requires {originalTime: DateTime, duration: Duration}
     returns { newTime: DateTime }
-    "???"
+    ???
   } with { briefly "used for incrementing start time and end time when DelayEvent is received" }
 
   function startTimeIfPast is {
     requires {startTime: DateTime}
     returns { timeOpt: DateTime? }
-    "???"
+    ???
   } with {
     briefly "returns startTime if it is past, empty option if it isn't. This is used when CancelEvent is received"
   }
@@ -24,7 +24,7 @@ context EventContext is {
   function nowIfStartIsPast is {
     requires {startTime: DateTime}
     returns { nowOpt: DateTime? }
-    "???"
+    ???
   } with {
     briefly "returns now if startTime is past, empty option if it isn't. This is used when CancelEvent is received"
   }
@@ -32,7 +32,7 @@ context EventContext is {
   function newEditableInfoFromFieldsPresentInEditable is {
     requires { editable: EditableEventInfo, oldInfo: EditableEventInfo }
     returns { newInfo: EditableEventInfo }
-    "???"
+    ???
   } with {
     briefly "returns newInfo with all fields present in editable and all those not present there taken from oldInfo"
   }
@@ -40,7 +40,7 @@ context EventContext is {
   function newInfoFromFieldsPresentInEditable is {
     requires { editable: EditableEventInfo, oldInfo: EventInfo }
     returns { newInfo: EventInfo }
-    "???"
+    ???
   } with {
     briefly "returns newInfo with all fields present in editable and all those not present there taken from oldInfo"
   }

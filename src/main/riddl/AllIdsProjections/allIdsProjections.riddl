@@ -48,7 +48,7 @@ context AllIdsProjections is  {
     }
     handler AllOrgIdsViewHandler is {
         on event ImprovingApp.OrganizationContext.OrganizationEstablished {
-          "create row with org set to OrganizationEstablished.orgId"// and orgStatus set to Draft"
+          prompt "create row with org set to OrganizationEstablished.orgId"// and orgStatus set to Draft"
         }
         //on event OrganizationStatusUpdated {
         //    then "update row with org set to OrganizationStatusUpdated.orgId to orgStatus with OrganizationStatusUpdated.newStatus"
@@ -67,7 +67,7 @@ context AllIdsProjections is  {
     }
     handler AllTenantIdsViewHandler is {
         on event EventScheduled {
-          "create row with event set to EventEstablished.eventId"// and eventStatus set to Scheduled"
+          prompt "create row with event set to EventEstablished.eventId"// and eventStatus set to Scheduled"
         }
         //on event EventCancelled {
         //    then "update row with event set to EventCancelled.eventId to eventStatus with Status.Cancelled"
@@ -97,7 +97,7 @@ context AllIdsProjections is  {
     }
     handler AllMemberIdsViewHandler is {
         on event MemberContext.MemberRegistered {
-          "create row with member set to MemberRegistered.memberId"// and memberStatus set to Active"
+          prompt "create row with member set to MemberRegistered.memberId"// and memberStatus set to Active"
         }
         //on event MemberStatusUpdated {
         //    then "update row with member set to MemberStatusUpdated.memberId to memberStatus with MemberStatusUpdated.newStatus"
