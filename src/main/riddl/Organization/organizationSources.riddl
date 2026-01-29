@@ -24,6 +24,20 @@ sink OrganizationCommandsSink is {
   inlet Sink is type OrganizationCommand
 }
 
+source OrganizationResultsSource is {
+  outlet Results is type OrganizationQueryResult
+}
+
+type OrganizationQueryResult is one of {
+  ImprovingApp.OrganizationContext.OrganizationInfo,
+  ImprovingApp.OrganizationContext.OrganizationParent,
+  ImprovingApp.OrganizationContext.OrganizationMembers,
+  ImprovingApp.OrganizationContext.OrganizationOwners,
+  ImprovingApp.OrganizationContext.OrganizationContacts,
+  ImprovingApp.OrganizationContext.OrganizationMeta,
+  ImprovingApp.OrganizationContext.OrganizationState
+}
+
 type OrganizationCommand is one of {
     ImprovingApp.OrganizationContext.EstablishOrganization,
     ImprovingApp.OrganizationContext.ActivateOrganization,
