@@ -12,8 +12,8 @@ context ReservationContext is {
           on command EstablishReservation {
             morph entity Reservation to state ImprovingApp.Events.ReservationContext.Reservation.Draft with
               record ImprovingApp.Events.ReservationContext.Reservation.DraftState
-            "Copy fields from the command into Draft fields"
-            "adjust meta fields to reflect the change set"
+            prompt "Copy fields from the command into Draft fields"
+            prompt "adjust meta fields to reflect the change set"
             send event ReservationEstablished to outlet ReservationEventsSource.Events
           }
           on other {
@@ -37,9 +37,9 @@ context ReservationContext is {
               send event ReservationInfoUpdated to outlet ReservationEventsSource.Events
             }
             on command ImprovingApp.Events.ReservationContext.UpdateReservationStatus {
-              "morph entity Reservation to state provided in UpdateReservationStatus"
-              "set MetaInfo to capture change data"
-              "yield event ReservationStatusUpdated"
+              prompt "morph entity Reservation to state provided in UpdateReservationStatus"
+              prompt "set MetaInfo to capture change data"
+              prompt "yield event ReservationStatusUpdated"
             }
         }
 
@@ -53,13 +53,13 @@ context ReservationContext is {
               error "Reservation already established"
             }
             on command ImprovingApp.Events.ReservationContext.EditReservationInfo {
-              "set OnHold info fields to EditReservationInfo.info"
-              "yield event ReservationInfoUpdated"
+              prompt "set OnHold info fields to EditReservationInfo.info"
+              prompt "yield event ReservationInfoUpdated"
             }
             on command ImprovingApp.Events.ReservationContext.UpdateReservationStatus {
-              "morph Reservation to the state provided in UpdateReservationStatus"
-              "set MetaInfo to capture change data"
-              "yield event ReservationStatusUpdated"
+              prompt "morph Reservation to the state provided in UpdateReservationStatus"
+              prompt "set MetaInfo to capture change data"
+              prompt "yield event ReservationStatusUpdated"
             }
         }
 
@@ -76,9 +76,10 @@ context ReservationContext is {
               error "Reservation is in Reserved state, editing info not allows"
             }
             on command ImprovingApp.Events.ReservationContext.UpdateReservationStatus {
-              "morph Reservation to the state provided in UpdateReservationStatus"
-              "set MetaInfo to capture change data"
-              "yield event ReservationStatusUpdated"			            }
+              prompt "morph Reservation to the state provided in UpdateReservationStatus"
+              prompt "set MetaInfo to capture change data"
+              prompt "yield event ReservationStatusUpdated"
+            }
         }
 
         record PastState {

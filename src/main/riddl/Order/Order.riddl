@@ -33,32 +33,32 @@ context OrderContext is {
     lineItems: LineItem*,
     specialInstructions: String?
   }
-  command CreateOrder {orderId: OrderId, storeId: ImprovingApp.StoreContext.StoreId, info: OrderInfo, creatingMember: MemberId}
-  event OrderCreated {orderId: OrderId, info: OrderInfo, meta: OrderMetaInfo}
-  command SetToPendingOrder {orderId: OrderId, updatingMember: MemberId}
-  event PendingOrderSet {orderId: OrderId, info: OrderInfo, meta: OrderMetaInfo}
-  command SetToInProcessOrder {orderId: OrderId, updatingMember: MemberId}
-  event InProcessOrderSet {orderId: OrderId, info: OrderInfo, meta: OrderMetaInfo}
-  command SetToReadyOrder {orderId: OrderId, updatingMember: MemberId}
-  event ReadyOrderSet {orderId: OrderId, info: OrderInfo, meta: OrderMetaInfo}
-  command DeliverOrder {orderId: OrderId, updatingMember: MemberId}
-  event OrderDelivered {orderId: OrderId, info: OrderInfo, meta: OrderMetaInfo}
-  command UpdateOrderInfo {orderId: OrderId, update: OrderInfoUpdate, updatingMember: MemberId}
-  event OrderInfoUpdated {orderId: OrderId, info: OrderInfo, meta: OrderMetaInfo}
-  command CancelOrder {orderId: OrderId, cancellingMember: MemberId}
-  event OrderCancelled {orderId: OrderId, info: OrderInfo, meta: OrderMetaInfo}
-  query GetOrderInfo {orderId: OrderId, requestingMember: MemberId}
-  result OrderInfoResult {orderId: OrderId, info: OrderMetaInfo, meta: OrderMetaInfo}
-  event LineItemOrdered {orderId: OrderId, productId: SKU, forMemberId: MemberId}
-  event LineItemCancelled {orderId: OrderId, productId: SKU, forMemberId: MemberId}
+  command CreateOrder is {orderId: OrderId, storeId: ImprovingApp.StoreContext.StoreId, info: OrderInfo, creatingMember: MemberId}
+  event OrderCreated is {orderId: OrderId, info: OrderInfo, meta: OrderMetaInfo}
+  command SetToPendingOrder is {orderId: OrderId, updatingMember: MemberId}
+  event PendingOrderSet is {orderId: OrderId, info: OrderInfo, meta: OrderMetaInfo}
+  command SetToInProcessOrder is {orderId: OrderId, updatingMember: MemberId}
+  event InProcessOrderSet is {orderId: OrderId, info: OrderInfo, meta: OrderMetaInfo}
+  command SetToReadyOrder is {orderId: OrderId, updatingMember: MemberId}
+  event ReadyOrderSet is {orderId: OrderId, info: OrderInfo, meta: OrderMetaInfo}
+  command DeliverOrder is {orderId: OrderId, updatingMember: MemberId}
+  event OrderDelivered is {orderId: OrderId, info: OrderInfo, meta: OrderMetaInfo}
+  command UpdateOrderInfo is {orderId: OrderId, update: OrderInfoUpdate, updatingMember: MemberId}
+  event OrderInfoUpdated is {orderId: OrderId, info: OrderInfo, meta: OrderMetaInfo}
+  command CancelOrder is {orderId: OrderId, cancellingMember: MemberId}
+  event OrderCancelled is {orderId: OrderId, info: OrderInfo, meta: OrderMetaInfo}
+  query GetOrderInfo is {orderId: OrderId, requestingMember: MemberId}
+  result OrderInfoResult is {orderId: OrderId, info: OrderMetaInfo, meta: OrderMetaInfo}
+  event LineItemOrdered is {orderId: OrderId, productId: SKU, forMemberId: MemberId}
+  event LineItemCancelled is {orderId: OrderId, productId: SKU, forMemberId: MemberId}
 
   entity Order is {
     handler DefaultOrderHandler is {
       on command CreateOrder {
-        "morph Order into Draft state"
-        "copy fields from CreateOrder command into the Draft Order"
-        "adjust meta fields to reflect the change set"
-        "yield OrderCreated event"
+        prompt "morph Order into Draft state"
+        prompt "copy fields from CreateOrder command into the Draft Order"
+        prompt "adjust meta fields to reflect the change set"
+        prompt "yield OrderCreated event"
       }
       on other {
         error "Only CreateOrder is allowed in the default state."
@@ -75,14 +75,14 @@ context OrderContext is {
         error "Order has already been created."
       }
       on command UpdateOrderInfo {
-        "copy fields from the UpdateOrderInfo command into the Draft Order"
-        "adjust meta fields to reflect the change set"
-        "yield OrderInfoUpdated event"
+        prompt "copy fields from the UpdateOrderInfo command into the Draft Order"
+        prompt "adjust meta fields to reflect the change set"
+        prompt "yield OrderInfoUpdated event"
       }
       on command SetToPendingOrder {
-        "morph order to Pending state"
-        "adjust meta fields to reflect change set"
-        "yield PendingOrderSet event"
+        prompt "morph order to Pending state"
+        prompt "adjust meta fields to reflect change set"
+        prompt "yield PendingOrderSet event"
       }
       on command SetToInProcessOrder {
         error "Draft orders may not transition to the InProcess state"
@@ -94,12 +94,12 @@ context OrderContext is {
         error "Draft orders may not transition to the Delivered state"
       }
       on command CancelOrder {
-        "morph order to Cancelled state"
-        "adjust meta fields to reflect change set"
-        "yield OrderCancelled event"
+        prompt "morph order to Cancelled state"
+        prompt "adjust meta fields to reflect change set"
+        prompt "yield OrderCancelled event"
       }
       on query GetOrderInfo {
-        "yield OrderInfoResult message"
+        prompt "yield OrderInfoResult message"
       }
     }
 
@@ -113,17 +113,17 @@ context OrderContext is {
         error "Order has already been created."
       }
       on command UpdateOrderInfo {
-        "copy fields from the UpdateOrderInfo command into the Draft Order"
-        "adjust meta fields to reflect the change set"
-        "yield OrderInfoUpdated event"
+        prompt "copy fields from the UpdateOrderInfo command into the Draft Order"
+        prompt "adjust meta fields to reflect the change set"
+        prompt "yield OrderInfoUpdated event"
       }
       on command SetToPendingOrder {
         error "Pending orders may not transition to the Pending state"
       }
       on command SetToInProcessOrder {
-        "morph order to InProcess state"
-        "adjust meta fields to reflect change set"
-        "yield InProcessOrderSet event"
+        prompt "morph order to InProcess state"
+        prompt "adjust meta fields to reflect change set"
+        prompt "yield InProcessOrderSet event"
       }
       on command SetToReadyOrder {
         error "Pending orders may not transition to the Ready state"
@@ -132,12 +132,12 @@ context OrderContext is {
         error "Pending orders may not transition to the Delivered state"
       }
       on command CancelOrder {
-        "morph order to Cancelled state"
-        "adjust meta fields to reflect change set"
-        "yield OrderCancelled event"
+        prompt "morph order to Cancelled state"
+        prompt "adjust meta fields to reflect change set"
+        prompt "yield OrderCancelled event"
       }
       on query GetOrderInfo {
-        "yield OrderInfoResult message"
+        prompt "yield OrderInfoResult message"
       }
     }
 
@@ -161,9 +161,9 @@ context OrderContext is {
         error "Draft orders may not transition to the InProcess state"
       }
       on command SetToReadyOrder {
-        "morph order to Ready state"
-        "adjust meta fields to reflect change set"
-        "yield ReadyOrderSet event"
+        prompt "morph order to Ready state"
+        prompt "adjust meta fields to reflect change set"
+        prompt "yield ReadyOrderSet event"
       }
       on command DeliverOrder {
         error "Pending orders may not transition to the Delivered state"
@@ -172,7 +172,7 @@ context OrderContext is {
         error "InProcess Orders may not be cancelled."
       }
       on query GetOrderInfo {
-        "yield OrderInfoResult message"
+        prompt "yield OrderInfoResult message"
       }
     }
 
@@ -198,15 +198,15 @@ context OrderContext is {
         error "Pending orders may not transition to the Ready state"
       }
       on command DeliverOrder {
-        "morph order to Delivered state"
-        "adjust meta fields to reflect change set"
-        "yield OrderDelivered event"
+        prompt "morph order to Delivered state"
+        prompt "adjust meta fields to reflect change set"
+        prompt "yield OrderDelivered event"
       }
       on command CancelOrder {
         error "Ready Orders may not be cancelled."
       }
       on query GetOrderInfo {
-        "yield OrderInfoResult message"
+        prompt "yield OrderInfoResult message"
       }
     }
 
@@ -234,14 +234,14 @@ context OrderContext is {
       on command DeliverOrder {
         morph entity Order to state Order.Delivered with
           record Order.DeliveredState
-        "adjust meta fields to reflect change set"
-        "yield OrderDelivered event"
+        prompt "adjust meta fields to reflect change set"
+        prompt "yield OrderDelivered event"
       }
       on command CancelOrder {
         error "Delivered Orders may not be cancelled."
       }
       on query GetOrderInfo {
-        "yield OrderInfoResult message"
+        prompt "yield OrderInfoResult message"
       }
     }
 
@@ -273,7 +273,7 @@ context OrderContext is {
         error "Delivered Orders may not be cancelled."
       }
       on query GetOrderInfo {
-        "yield result OrderInfoResult"
+        prompt "yield result OrderInfoResult"
       }
     }
   }

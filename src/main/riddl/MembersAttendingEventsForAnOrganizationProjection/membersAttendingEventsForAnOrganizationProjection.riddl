@@ -15,31 +15,31 @@ context MembersAttendingEventsForAnOrganizationProjection is  {
     }
     handler MembersAttendingEventsForAnOrganizationEventsViewHandler is {
         on event MemberContext.MemberRegistered {
-          "create rows in member table with attendingMember set to MemberRegistered.id"
-          "set previous row's attendingMemberName to concatenated MemberRegistered.info.firstName and MemberRegistered.info.lastName"
+          prompt "create rows in member table with attendingMember set to MemberRegistered.id"
+          prompt "set previous row's attendingMemberName to concatenated MemberRegistered.info.firstName and MemberRegistered.info.lastName"
         }
         on event EventScheduled {
-          "create row in event table with event set to EventScheduled.eventId, eventName set to EventScheduled.info.eventName, eventOrg to EventScheduled.info.sponsoringOrg, eventDate to day of EventScheduled.info.expectedStart"
-          "create row in org-event table with event set to EventScheduled.eventId, eventOrg set to set to EventScheduled.info.sponsoringOrg"
+          prompt "create row in event table with event set to EventScheduled.eventId, eventName set to EventScheduled.info.eventName, eventOrg to EventScheduled.info.sponsoringOrg, eventDate to day of EventScheduled.info.expectedStart"
+          prompt "create row in org-event table with event set to EventScheduled.eventId, eventOrg set to set to EventScheduled.info.sponsoringOrg"
         }
         on event EventRescheduled {
-          "update eventDate with day of EventRescheduled.startTime in row in event table with event corresponding to EventRescheduled.eventId"
+          prompt "update eventDate with day of EventRescheduled.startTime in row in event table with event corresponding to EventRescheduled.eventId"
         }
         on event EventCancelled {
-          "remove row in row in event table with event corresponding to EventCancelled.eventId"
-          "remove row in org-event table with event set to EventScheduled.eventId, eventOrg set to set to EventScheduled.info.sponsoringOrg"
+          prompt "remove row in row in event table with event corresponding to EventCancelled.eventId"
+          prompt "remove row in org-event table with event set to EventScheduled.eventId, eventOrg set to set to EventScheduled.info.sponsoringOrg"
         }
         on event ProductCreated {
-          "if product is ticket, create row in ticket-event table with sku as ticketSku & productDetails.eventId as event"
+          prompt "if product is ticket, create row in ticket-event table with sku as ticketSku & productDetails.eventId as event"
         }
         on event OrderCreated {
-          "for each OrderCreated.orderInfo.lineItem that has a SKU in ticket table, create row in ticket-event table with OrderCreated.meta.memberId as attendingMember & sku as ticketSku"
+          prompt "for each OrderCreated.orderInfo.lineItem that has a SKU in ticket table, create row in ticket-event table with OrderCreated.meta.memberId as attendingMember & sku as ticketSku"
         }
         on query FindMembersAtEventsOnDayForOrg {
-          "filter org table by FindMembersAtEventsOnDayForOrg.org"
-          "left results of previous operation with org-event, ticket-event, ticket-member, member, event tables"
-          "filter result of previous operation by eventDate equals FindMembersAtEventsOnDayForOrg.eventDate"
-          "return MembersAtEventsOnDay with event info keyed by members - or NoEventsOnDayForOrg if table is empty"
+          prompt "filter org table by FindMembersAtEventsOnDayForOrg.org"
+          prompt "left results of previous operation with org-event, ticket-event, ticket-member, member, event tables"
+          prompt "filter result of previous operation by eventDate equals FindMembersAtEventsOnDayForOrg.eventDate"
+          prompt "return MembersAtEventsOnDay with event info keyed by members - or NoEventsOnDayForOrg if table is empty"
         }
     }
   }

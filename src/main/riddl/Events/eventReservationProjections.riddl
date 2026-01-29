@@ -13,24 +13,24 @@ context EventReservationProjections is  {
     }
     handler EventReservationViewHandler is {
         on event EventScheduled {
-          "find or create rows with eventId set to EventScheduled.eventId"
+          prompt "find or create rows with eventId set to EventScheduled.eventId"
         }
         //on event ReservationAddedToEvent {
         //    then "find rows with event set to ReservationAddedToEvent.event"
         //    and "set rows' reservation to ReservationAddedToEvent.reservation"
         //}
         on event ReservationEstablished {
-          "create rows with reservation set to ReservationEstablished.reservationId and location set to EstablishReservation.info.location"
+          prompt "create rows with reservation set to ReservationEstablished.reservationId and location set to EstablishReservation.info.location"
         }
         on event ReservationInfoUpdated {
-          "find rows with reservation set to ReservationInfoUpdated.reservationId"
-          "set rows' location to ReservationInfoUpdated.info.location"
+          prompt "find rows with reservation set to ReservationInfoUpdated.reservationId"
+          prompt "set rows' location to ReservationInfoUpdated.info.location"
         }
         on query GetLocationForEvent {
-          "filter by GetLocationForEvent.event equals event - return EventNotFound if empty"
-          "if head of list has no reservation, return NoReservationForEvent"
-          "if head of list has no location, return NoLocationForEventReservation"
-          "otherwise return LocationForEvent with head of list's location and event"
+          prompt "filter by GetLocationForEvent.event equals event - return EventNotFound if empty"
+          prompt "if head of list has no reservation, return NoReservationForEvent"
+          prompt "if head of list has no location, return NoLocationForEventReservation"
+          prompt "otherwise return LocationForEvent with head of list's location and event"
         }
     }
   }

@@ -84,9 +84,9 @@ context ProductContext is {
         error "Product already created."
       }
       on command UpdateProductInfo{
-        "Copy fields that are provided from UpdateProductInfo.info into DefinedProductState.info fields"
-        "adjust meta fields to reflect the change set"
-        "yield ProductInfoUpdated event with new info"
+        prompt "Copy fields that are provided from UpdateProductInfo.info into DefinedProductState.info fields"
+        prompt "adjust meta fields to reflect the change set"
+        prompt "yield ProductInfoUpdated event with new info"
       }
       on command DeleteProduct{
         set field DraftProductState.meta to "ProductContext.ProductMetaInfo"
@@ -95,20 +95,20 @@ context ProductContext is {
         morph entity ProductContext.Product to state DeletedProductState with record DeletedProduct
       }
       on command ActivateProduct{
-        if "not all required fields are filled in" then {
-          "return a list of non-filled in fields"
-        } else {
+        when "not all required fields are filled in" then
+          prompt "return a list of non-filled in fields"
+        else
           // "all required fields are present"
           set field DraftProductState.meta to "ProductContext.ProductMetaInfo"
           send event ProductActivated to outlet ProductEventsSource
           morph entity Product to state DefinedProductState with record DefinedProduct
-        } end
+        end
       }
       on command InactivateProduct{
         error "cannot inactivate a draft product"
       }
       on query GetProductInfo{
-        "yield ProductInfoResult message"
+        prompt "yield ProductInfoResult message"
       }
     }
 
@@ -123,9 +123,9 @@ context ProductContext is {
         error "Product already created."
       }
       on command ProductContext.UpdateProductInfo{
-        "Copy fields that are provided from UpdateProductInfo.info into DefinedProductState.info fields"
-        "adjust meta fields to reflect the change set"
-        "yield ProductInfoUpdated event with new info"
+        prompt "Copy fields that are provided from UpdateProductInfo.info into DefinedProductState.info fields"
+        prompt "adjust meta fields to reflect the change set"
+        prompt "yield ProductInfoUpdated event with new info"
       }
       on command ProductContext.DeleteProduct{
         set field DefinedProductState.meta to "ProductContext.ProductMetaInfo"
@@ -141,7 +141,7 @@ context ProductContext is {
         become entity ProductContext.Product to handler Product.InactiveProductHandler
       }
       on query GetProductInfo{
-        "yield ProductInfoResult message"
+        prompt "yield ProductInfoResult message"
       }
     }
     handler InactiveProductHandler is {
@@ -149,9 +149,9 @@ context ProductContext is {
         error "Product already created."
       }
       on command ProductContext.UpdateProductInfo{
-        "Copy fields that are provided from UpdateProductInfo.info into DefinedProductState.info fields"
-        "adjust meta fields to reflect the change set"
-        "yield ProductInfoUpdated event with new info"
+        prompt "Copy fields that are provided from UpdateProductInfo.info into DefinedProductState.info fields"
+        prompt "adjust meta fields to reflect the change set"
+        prompt "yield ProductInfoUpdated event with new info"
       }
       on command ProductContext.DeleteProduct{
         set field DefinedProductState.meta to "ProductContext.ProductMetaInfo"
@@ -167,7 +167,7 @@ context ProductContext is {
         error "Product is already Inactive"
       }
       on query GetProductInfo{
-        "yield ProductInfoResult message"
+        prompt "yield ProductInfoResult message"
       }
     }
 
@@ -193,7 +193,7 @@ context ProductContext is {
         error "Cannot inactivate a Deleted product."
       }
       on query GetProductInfo{
-        "yield ProductInfoUpdate with only sku and name populated"
+        prompt "yield ProductInfoUpdate with only sku and name populated"
       }
     }
   } with {

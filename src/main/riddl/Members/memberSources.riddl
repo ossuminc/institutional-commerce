@@ -41,3 +41,22 @@ type MemberEvent is one of {
     ImprovingApp.MemberContext.MemberInfoEdited,
     ImprovingApp.MemberContext.MemberData
 }
+
+connector MemberResultsChannel is {
+  from outlet MemberResultsSource.Source to
+    inlet MemberResultsSink.Sink
+}
+
+source MemberResultsSource is {
+  outlet Source is type MemberResult
+}
+
+sink MemberResultsSink is {
+  inlet Sink is type MemberResult
+}
+
+type MemberResult is one of {
+    ImprovingApp.MemberContext.MemberData,
+    ImprovingApp.MemberContext.MemberListResult,
+    ImprovingApp.MemberContext.Info
+}

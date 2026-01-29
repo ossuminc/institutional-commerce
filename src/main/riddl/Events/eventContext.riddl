@@ -10,13 +10,13 @@ context EventContext is {
   function IncrementDelayedEventTime is {
     requires {originalTime: DateTime, duration: Duration}
     returns { newTime: DateTime }
-    "???"
+    ???
   } with { briefly "used for incrementing start time and end time when DelayEvent is received" }
 
   function startTimeIfPast is {
     requires {startTime: DateTime}
     returns { timeOpt: DateTime? }
-    "???"
+    ???
   } with {
     briefly "returns startTime if it is past, empty option if it isn't. This is used when CancelEvent is received"
   }
@@ -24,7 +24,7 @@ context EventContext is {
   function nowIfStartIsPast is {
     requires {startTime: DateTime}
     returns { nowOpt: DateTime? }
-    "???"
+    ???
   } with {
     briefly "returns now if startTime is past, empty option if it isn't. This is used when CancelEvent is received"
   }
@@ -32,7 +32,7 @@ context EventContext is {
   function newEditableInfoFromFieldsPresentInEditable is {
     requires { editable: EditableEventInfo, oldInfo: EditableEventInfo }
     returns { newInfo: EditableEventInfo }
-    "???"
+    ???
   } with {
     briefly "returns newInfo with all fields present in editable and all those not present there taken from oldInfo"
   }
@@ -40,7 +40,7 @@ context EventContext is {
   function newInfoFromFieldsPresentInEditable is {
     requires { editable: EditableEventInfo, oldInfo: EventInfo }
     returns { newInfo: EventInfo }
-    "???"
+    ???
   } with {
     briefly "returns newInfo with all fields present in editable and all those not present there taken from oldInfo"
   }
@@ -63,41 +63,41 @@ context EventContext is {
       //reservation: ReservationId?
     }
     state DraftEvent of Event.DraftEventState
-    handler DraftEventHandler {
-      on command ScheduleEvent{
-        if "all required info fields are present" then
-          "set a scheduled Akka call for emitting StartEvent at DraftEventState.info.expectedStart"
+    handler DraftEventHandler is {
+      on command ScheduleEvent {
+        when "all required info fields are present" then
+          prompt "set a scheduled Akka call for emitting StartEvent at DraftEventState.info.expectedStart"
           send event EventScheduled to outlet EventEventsSource.Events
           morph entity Event to state ScheduledEvent with record ScheduledEventState
-        else ??? end
+        end
       }
-      on command EditEventInfo{
+      on command EditEventInfo {
         set field DraftEventState.info to "EventContext.newEditableInfoFromFieldsPresentInEditable"
         set field DraftEventState.meta to "EventMetaInfo"
         send event EventRescheduled
           to outlet EventEventsSource.Events
       }
-      on command CancelEvent{
-        if "all required info fields are present" then
-          "cancel associated scheduled call to emit StartEvent"
+      on command CancelEvent {
+        when "all required info fields are present" then
+          prompt "cancel associated scheduled call to emit StartEvent"
           send event EventCancelled to outlet EventEventsSource.Events
           morph entity Event to state ScheduledEvent with record ScheduledEventState
-        else ??? end
+        end
       }
       on command RescheduleEvent {
-        if "start is validated to be before end in command" then
-          "adjust associated scheduled call to emit StartEvent"
+        when "start is validated to be before end in command" then
+          prompt "adjust associated scheduled call to emit StartEvent"
           set field DraftEventState.info to "EditableEventInfo"
           set field DraftEventState.meta to "EventMetaInfo"
           send event EventRescheduled to outlet EventEventsSource.Events
-        else ??? end
+        end
       }
-      on command DelayEvent{
-        if "all required info fields are present" then
-          "adjust associated scheduled call to emit StartEvent"
+      on command DelayEvent {
+        when "all required info fields are present" then
+          prompt "adjust associated scheduled call to emit StartEvent"
           send event EventDelayed to outlet EventEventsSource.Events
           morph entity Event to state ScheduledEvent with record ScheduledEventState
-        else ??? end
+        end
       }
       on command StartEvent {
         error "Cannot start an event unless is state Scheduled or Delayed"
@@ -118,13 +118,13 @@ context EventContext is {
       //reservation: ReservationId?
     }
     state ScheduledEvent of Event.ScheduledEventState
-    handler DefaultScheduledEventHandler {
+    handler DefaultScheduledEventHandler is {
       on other {
-        "pick the correct handler based on meta.currentSate and become it"
+        prompt "pick the correct handler based on meta.currentSate and become it"
       }
     }
-    handler ScheduledEventHandler {
-        on command ScheduleEvent{
+    handler ScheduledEventHandler is {
+        on command ScheduleEvent {
           error "Event is already scheduled. Please RescheduleEvent to change event information."
         }
         //on command AddReservationToEvent {
@@ -136,29 +136,29 @@ context EventContext is {
           send event EventInfoEdited to outlet EventEventsSource.Events
         }
         on command CancelEvent {
-          "cancel associated scheduled call to emit StartEvent"
+          prompt "cancel associated scheduled call to emit StartEvent"
           send event EventCancelled to outlet EventEventsSource.Events
           become entity Event to handler CancelledEventHandler
         }
         on command DelayEvent {
-          "adjust associated scheduled Akka call to emit StartEvent"
+          prompt "adjust associated scheduled Akka call to emit StartEvent"
           send event EventDelayed to outlet EventEventsSource.Events
           become entity Event to handler DelayedEventHandler
         }
-        on command StartEvent{
-          "create scheduled Akka call using ScheduledEventState.info.expectedEnd to emit EndEvent"
+        on command StartEvent {
+          prompt "create scheduled Akka call using ScheduledEventState.info.expectedEnd to emit EndEvent"
           send event EventStarted to outlet EventEventsSource.Events
           become entity Event to handler InProgressEventHandler
       } with { briefly "to be invoked by Akka scheduler upon ScheduleEvent reception" }
       on command RescheduleEvent {
-        if "start is validated to be before end in command" then
-          "adjust associated scheduled call to emit StartEvent"
+        when "start is validated to be before end in command" then
+          prompt "adjust associated scheduled call to emit StartEvent"
           set field ScheduledEventState.info to "EventInfo"
           set field ScheduledEventState.meta to "EventMetaInfo"
           send event EventRescheduled to outlet EventEventsSource.Events
-        else ??? end
+        end
       }
-      on command EndEvent{
+      on command EndEvent {
         error "End has not started. Cannot end an event that has not started."
       }
       // TODO: implement AddLiveUpdate
@@ -167,23 +167,23 @@ context EventContext is {
       }
     }
     handler InProgressEventHandler is {
-        on command ScheduleEvent{
+        on command ScheduleEvent {
            error "Event is already in progress, cannot be scheduled"
         }
         //on command AddReservationToEvent{
         //    then error "Event is already in progress, cannot accept new reservation"
         //}
-        on command EditEventInfo{
+        on command EditEventInfo {
           error "Event is already in progress, info cannot be modified"
         }
-        on command CancelEvent{
+        on command CancelEvent {
           error "Event is already in progress, cannot be cancelled"
         }
-        on command RescheduleEvent{
+        on command RescheduleEvent {
           error "Event is already in progress, must be delayed to be rescheduled"
         }
-        on command DelayEvent{
-          "adjust associated scheduled Akka call to emit StartEvent"
+        on command DelayEvent {
+          prompt "adjust associated scheduled Akka call to emit StartEvent"
           send event EventDelayed to outlet EventEventsSource.Events
           become entity Event to handler DelayedEventHandler
         }
@@ -200,54 +200,54 @@ context EventContext is {
         }
     }
     handler DelayedEventHandler is {
-        on command ScheduleEvent{
+        on command ScheduleEvent {
           error "Cannot schedule a delayed event, please reschedule"
         }
         //on command AddReservationToEvent{
         //    then error "Event cannot accept new reservation in delayed state - please try exte4nding the reservation"
         //}
-        on command EditEventInfo{
+        on command EditEventInfo {
            set field ScheduledEventState.info to "EventContext.newInfoFromFieldsPresentInEditable"
            set field ScheduledEventState.meta to "EventMetaInfo"
            send event EventInfoEdited to outlet EventEventsSource.Events
         }
-        on command CancelEvent{
-          "cancel associated scheduled call to emit StartEvent"
+        on command CancelEvent {
+          prompt "cancel associated scheduled call to emit StartEvent"
           send event EventCancelled to outlet EventEventsSource.Events
           become entity Event to handler CancelledEventHandler
         }
-        on command RescheduleEvent{
-          if "start is validated to be before end in command" then
-            "adjust associated scheduled call to emit StartEvent"
+        on command RescheduleEvent {
+          when "start is validated to be before end in command" then
+            prompt "adjust associated scheduled call to emit StartEvent"
             set field ScheduledEventState.info to "EventInfo"
             set field ScheduledEventState.meta to "EventMetaInfo"
             send event EventRescheduled to outlet EventEventsSource.Events
-          else ??? end
+          end
         }
-        on command DelayEvent{
+        on command DelayEvent {
           error "Cannot delay a delayed event again, must be rescheduled"
         }
-        on command StartEvent{
-          "create scheduled Akka call using ScheduledEventState.info.expectedEnd to emit EndEvent"
+        on command StartEvent {
+          prompt "create scheduled Akka call using ScheduledEventState.info.expectedEnd to emit EndEvent"
           send event EventStarted to outlet EventEventsSource.Events
           become entity Event to handler InProgressEventHandler
         } with { briefly "to be invoked by Akka scheduler upon ScheduleEvent reception" }
-        on command EndEvent{
+        on command EndEvent {
           error "Only events that are InProgress may be ended. If you wish to end this event it must be started first. If you wish to cancel the event, please use the CancelEvent Command."
         }
         // TODO: IMplement AddLiveUpdate in on clause
-        on command AddLiveUpdate{
+        on command AddLiveUpdate {
           ???
         }
     }
     handler CancelledEventHandler is {
-        on command RescheduleEvent{
-          if "start is validated to be before end in command" then
-            "adjust associated scheduled call to emit StartEvent"
+        on command RescheduleEvent {
+          when "start is validated to be before end in command" then
+            prompt "adjust associated scheduled call to emit StartEvent"
             set field ScheduledEventState.info to "EventInfo"
             set field ScheduledEventState.meta to "EventMetaInfo"
             send event EventRescheduled to outlet EventEventsSource.Events
-          else ??? end
+          end
         }
         on other {
           error "Event is delayed, the only available commands is RescheduleEvent"

@@ -284,21 +284,21 @@ context MemberContext is {
           }
         }
 
-        handler DraftMemberHandler {
+        handler DraftMemberHandler is {
           on command ImprovingApp.MemberContext.RegisterMember {
             error "Member has already been registered."
           }
           on command ImprovingApp.MemberContext.ActivateMember {
-            if "all required fields in requiredInfo are not None or Empty" then
+            when "all required fields in requiredInfo are not None or Empty" then
               send event MemberRegistered to outlet MemberEventsSource.Events
               morph entity Member to state RegisteredMemberState with record RegisteredMember
-            else {
-              if "all required fields in state are not present" then
+            else
+              when "all required fields in state are not present" then
                 error "state is not sufficiently filled out to activate organization"
               else
-                "do nothing"
+                prompt "do nothing"
               end
-            } end
+            end
           }
           on command EditMemberInfo {
             set field Member.DraftMemberState.info to "MemberContext.EditableInfo"
@@ -309,7 +309,7 @@ context MemberContext is {
           // potentially allow other roles to get some limited information (this will require adding another
           // aggregate).
           on query GetMemberData {
-            send record MemberInfo to outlet ImprovingApp.MemberContext.MemberEventsSource.Events
+            send record MemberInfo to outlet ImprovingApp.MemberContext.MemberResultsSource.Source
           }
         }
 
@@ -324,7 +324,7 @@ context MemberContext is {
         invariant firstName is ">=(length(@RegisteredMemberState.info.firstName), 3)"
         invariant lastName is ">=(length(@RegisteredMemberState.info.firstName), 3)"
 
-        handler ActiveMemberHandler {
+        handler ActiveMemberHandler is {
             on command ImprovingApp.MemberContext.RegisterMember {
               error "Member has already been registered."
             }
@@ -350,17 +350,17 @@ context MemberContext is {
                 send event MemberInfoEdited to outlet ImprovingApp.MemberContext.MemberEventsSource.Events
             }
             on command ImprovingApp.MemberContext.SuspendMember {
-              if "all required fields in requiredInfo are not None or Empty" then {
+              when "all required fields in requiredInfo are not None or Empty" then
                 send event MemberSuspended to outlet MemberEventsSource.Events
-                  become entity Member to handler SuspendedMemberHandler
-                }
+                become entity Member to handler SuspendedMemberHandler
+              end
             }
             on command ImprovingApp.MemberContext.TerminateMember {
               set field RegisteredMemberState.meta to "record MemberContext.MetaInfo"
               morph entity ImprovingApp.MemberContext.Member to state ImprovingApp.MemberContext.Member.TerminatedMember with record TerminatedMemberState
             }
             on query GetMemberData {
-              reply record MemberInfo
+              send record MemberInfo to outlet MemberResultsSource.Source
             }
         } with {
           described as {
@@ -369,7 +369,7 @@ context MemberContext is {
           }
         }
 
-        handler SuspendedMemberHandler {
+        handler SuspendedMemberHandler is {
             on command ImprovingApp.MemberContext.RegisterMember {
               error "Member has already been registered."
             }
@@ -386,7 +386,7 @@ context MemberContext is {
               morph entity ImprovingApp.MemberContext.Member to state TerminatedMember with record TerminatedMemberState
             }
             on query GetMemberData {
-              reply record ImprovingApp.MemberContext.Info
+              send record ImprovingApp.MemberContext.Info to outlet MemberResultsSource.Source
             }
         } with {
           described as {

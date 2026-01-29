@@ -11,10 +11,10 @@ context TenantContext is {
     entity Tenant is {
         handler TenantHandler is {
           on command EstablishTenant {
-            if "name is being used for another tenant" then
+            when "name is being used for another tenant" then
               error "Name is not available for use"
             else
-              if "primaryContact info is not complete" then
+              when "primaryContact info is not complete" then
                 error "primaryContact must be complete in order to establish a Tenant"
               else
                 send event TenantEstablished to outlet TenantEventsSource.Events
@@ -152,13 +152,13 @@ context TenantContext is {
         state EstablishedTenant is EstablishedTenantState
         handler ActiveTenantHandler is {
           on command TenantContext.EditInfo {
-            "Copy fields which are present from TenantContext.EditInfo.newInfo into info fields"
+            prompt "Copy fields which are present from TenantContext.EditInfo.newInfo into info fields"
             set field EstablishedTenantState.meta to "record TenantContext.TenantMetaInfo"
             send event TenantContext.InfoEdited
               to outlet TenantEventsSource.Events
           }
           on command SuspendTenant {
-            if "updating user is not authorized to suspend tenant" then
+            when "updating user is not authorized to suspend tenant" then
               error "User is not authorized to suspend Tenant"
             else
               set field EstablishedTenantState.meta to "record TenantContext.TenantMetaInfo"
@@ -167,7 +167,7 @@ context TenantContext is {
             end
           }
           on command TerminateTenant {
-            if "terminating user is not authorized to make changes to the tenant" then
+            when "terminating user is not authorized to make changes to the tenant" then
               error "User is not authorized to modify Tenant"
             else
               set field EstablishedTenantState.meta to "TenantContext.TenantMetaInfo"
@@ -212,13 +212,13 @@ context TenantContext is {
         }
         handler SuspendedTenantHandler is {
           on command TenantContext.EditInfo {
-            "Copy fields which are present from TenantContext.EditInfo.newInfo into info fields"
+            prompt "Copy fields which are present from TenantContext.EditInfo.newInfo into info fields"
             set field EstablishedTenantState.meta to "TenantContext.TenantMetaInfo"
             send event TenantContext.InfoEdited
               to outlet TenantEventsSource.Events
           }
           on command ActivateTenant {
-            if "updating user is not authorized to activate the tenant" then
+            when "updating user is not authorized to activate the tenant" then
               error "User is not authorized to Activate Tenant"
             else
               set field EstablishedTenantState.meta to "TenantContext.TenantMetaInfo"
@@ -227,7 +227,7 @@ context TenantContext is {
             end
           }
           on command TerminateTenant {
-            if "terminating user is not authorized to make changes to the tenant" then
+            when "terminating user is not authorized to make changes to the tenant" then
               error "User is not authorized to modify Tenant"
             else
 //                  set field EstablishedTenantState.meta to "TenantContext.TenantMetaInfo"

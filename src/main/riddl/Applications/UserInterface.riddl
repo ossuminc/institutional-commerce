@@ -121,7 +121,7 @@ context CommandLine is {
       tell command CommandLine.StartScenario to context GatewayAction
     }
     on result ImprovingApp.CommandLine.ScenarioStarted from context GatewayAction {
-      "display in terminal"
+      prompt "display in terminal"
     }
   }
 }

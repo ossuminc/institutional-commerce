@@ -47,3 +47,27 @@ type OrganizationEvent is one of {
     ImprovingApp.OrganizationContext.OrganizationContactsUpdated,
     ImprovingApp.OrganizationContext.OrganizationAccountsUpdated
 }
+
+connector OrganizationResultsChannel is {
+  from outlet OrganizationResultsSource.Source to
+    inlet OrganizationResultsSink.Sink
+}
+
+source OrganizationResultsSource is {
+  outlet Source is type OrganizationResult
+}
+
+sink OrganizationResultsSink is {
+  inlet Sink is type OrganizationResult
+}
+
+type OrganizationResult is one of {
+    ImprovingApp.OrganizationContext.OrganizationInfo,
+    ImprovingApp.OrganizationContext.OrganizationParent,
+    ImprovingApp.OrganizationContext.OrganizationMembers,
+    ImprovingApp.OrganizationContext.OrganizationOwners,
+    ImprovingApp.OrganizationContext.OrganizationContacts,
+    ImprovingApp.OrganizationContext.OrganizationMeta,
+    ImprovingApp.OrganizationContext.OrganizationState,
+    ImprovingApp.OrganizationContext.OrganizationListByMemberOrOwner
+}
