@@ -309,7 +309,7 @@ context MemberContext is {
           // potentially allow other roles to get some limited information (this will require adding another
           // aggregate).
           on query GetMemberData {
-            send record MemberInfo to outlet ImprovingApp.MemberContext.MemberResultsSource.Source
+            send record MemberInfo to outlet ImprovingApp.MemberContext.MemberResultsSource.Results
           }
         }
 
@@ -360,7 +360,7 @@ context MemberContext is {
               morph entity ImprovingApp.MemberContext.Member to state ImprovingApp.MemberContext.Member.TerminatedMember with record TerminatedMemberState
             }
             on query GetMemberData {
-              send record MemberInfo to outlet MemberResultsSource.Source
+              send record MemberInfo to outlet MemberResultsSource.Results
             }
         } with {
           described as {
@@ -386,7 +386,7 @@ context MemberContext is {
               morph entity ImprovingApp.MemberContext.Member to state TerminatedMember with record TerminatedMemberState
             }
             on query GetMemberData {
-              send record ImprovingApp.MemberContext.Info to outlet MemberResultsSource.Source
+              send record ImprovingApp.MemberContext.Info to outlet MemberResultsSource.Results
             }
         } with {
           described as {

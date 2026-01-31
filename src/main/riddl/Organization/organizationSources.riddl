@@ -63,12 +63,8 @@ type OrganizationEvent is one of {
 }
 
 connector OrganizationResultsChannel is {
-  from outlet OrganizationResultsSource.Source to
+  from outlet OrganizationResultsSource.Results to
     inlet OrganizationResultsSink.Sink
-}
-
-source OrganizationResultsSource is {
-  outlet Source is type OrganizationResult
 }
 
 sink OrganizationResultsSink is {

@@ -157,11 +157,11 @@ context OrganizationContext is {
               end
             }
             on query GetOrganizationInfo {
-              send result OrganizationInfo to outlet OrganizationResultsSource.Source
+              send result OrganizationInfo to outlet OrganizationResultsSource.Results
             }
             on query GetOrganizationParent {
               when "Parent field is present (non-empty)" then
-                send result OrganizationParent to outlet OrganizationResultsSource.Source
+                send result OrganizationParent to outlet OrganizationResultsSource.Results
               else
                 when "in Draft state and Parent is not empty in editableInfo" then
                   error "Parent field is not present in current state of Draft"
@@ -170,7 +170,7 @@ context OrganizationContext is {
             }
             on query GetOrganizationMembers {
               when "Members field is present (non-empty)" then
-                send result OrganizationMembers to outlet OrganizationResultsSource.Source
+                send result OrganizationMembers to outlet OrganizationResultsSource.Results
               else
                 when "in Draft state and Members is not empty in editableInfo" then
                   error "Members field is not present in current state of Draft"
@@ -182,7 +182,7 @@ context OrganizationContext is {
                 error "Owners field is not present in current state of Draft"
               else
                 when "Owners field is present (non-empty)" then
-                   send result OrganizationOwners to outlet OrganizationResultsSource.Source
+                   send result OrganizationOwners to outlet OrganizationResultsSource.Results
                 end
               end
             }
@@ -191,16 +191,16 @@ context OrganizationContext is {
                 error "Contacts field is not present in current state of Draft"
               else
                 when "Contacts field is present (non-empty)" then
-                   send result OrganizationContacts to outlet OrganizationResultsSource.Source
+                   send result OrganizationContacts to outlet OrganizationResultsSource.Results
                 end
               end
             }
             on query GetOrganizationMeta {
-              send result OrganizationMeta to outlet OrganizationResultsSource.Source
+              send result OrganizationMeta to outlet OrganizationResultsSource.Results
             }
              on query GetOrganizationState {
                when "State field is present (non-empty)" then
-                 send result OrganizationState to outlet OrganizationResultsSource.Source
+                 send result OrganizationState to outlet OrganizationResultsSource.Results
                end
             }
             on other {
@@ -345,25 +345,25 @@ context OrganizationContext is {
                   //(lastMeta = @EstablishedOrganizationState.orgMeta)
             }
             on query GetOrganizationInfo {
-              send result OrganizationInfo to outlet OrganizationResultsSource.Source
+              send result OrganizationInfo to outlet OrganizationResultsSource.Results
             }
             on query GetOrganizationParent {
-              send result OrganizationParent to outlet OrganizationResultsSource.Source
+              send result OrganizationParent to outlet OrganizationResultsSource.Results
             }
             on query GetOrganizationMembers {
-              send result OrganizationMembers to outlet OrganizationResultsSource.Source
+              send result OrganizationMembers to outlet OrganizationResultsSource.Results
             }
             on query GetOrganizationOwners {
-              send result OrganizationOwners to outlet OrganizationResultsSource.Source
+              send result OrganizationOwners to outlet OrganizationResultsSource.Results
             }
             on query GetOrganizationContacts {
-              send result OrganizationContacts to outlet OrganizationResultsSource.Source
+              send result OrganizationContacts to outlet OrganizationResultsSource.Results
             }
             on query GetOrganizationMeta {
-              send result OrganizationMeta to outlet OrganizationResultsSource.Source
+              send result OrganizationMeta to outlet OrganizationResultsSource.Results
             }
             on query GetOrganizationState {
-              send result OrganizationState to outlet OrganizationResultsSource.Source
+              send result OrganizationState to outlet OrganizationResultsSource.Results
             }
             on other {
               error "No other commands allowed in Active state"
@@ -393,25 +393,25 @@ context OrganizationContext is {
                   state ImprovingApp.OrganizationContext.Organization.TerminatedOrganization with record TerminatedOrganizationState
             }
             on query GetOrganizationInfo {
-              send result OrganizationInfo to outlet OrganizationResultsSource.Source
+              send result OrganizationInfo to outlet OrganizationResultsSource.Results
             }
             on query GetOrganizationParent {
-              send result OrganizationParent to outlet OrganizationResultsSource.Source
+              send result OrganizationParent to outlet OrganizationResultsSource.Results
             }
             on query GetOrganizationMembers {
-              send result OrganizationMembers to outlet OrganizationResultsSource.Source
+              send result OrganizationMembers to outlet OrganizationResultsSource.Results
             }
             on query GetOrganizationOwners {
-              send result OrganizationOwners to outlet OrganizationResultsSource.Source
+              send result OrganizationOwners to outlet OrganizationResultsSource.Results
             }
             on query GetOrganizationContacts {
-              send result OrganizationContacts to outlet OrganizationResultsSource.Source
+              send result OrganizationContacts to outlet OrganizationResultsSource.Results
             }
             on query GetOrganizationMeta {
-              send result OrganizationMeta to outlet OrganizationResultsSource.Source
+              send result OrganizationMeta to outlet OrganizationResultsSource.Results
             }
              on query GetOrganizationState {
-              send result OrganizationState to outlet OrganizationResultsSource.Source
+              send result OrganizationState to outlet OrganizationResultsSource.Results
             }
             on other {
               error "Move organization to the Active state in order to edit details about organization."

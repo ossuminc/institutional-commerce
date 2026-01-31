@@ -51,16 +51,12 @@ type MemberEvent is one of {
 }
 
 connector MemberResultsChannel is {
-  from outlet MemberResultsSource.Source to
-    inlet MemberResultsSink.Sink
-}
-
-source MemberResultsSource is {
-  outlet Source is type MemberResult
+  from outlet MemberResultsSource.Results to
+    inlet MemberResultsSink.Results
 }
 
 sink MemberResultsSink is {
-  inlet Sink is type MemberResult
+  inlet Results is type MemberQueryResult
 }
 
 type MemberResult is one of {
