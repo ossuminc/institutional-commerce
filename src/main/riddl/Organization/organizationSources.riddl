@@ -68,7 +68,7 @@ connector OrganizationResultsChannel is {
 }
 
 sink OrganizationResultsSink is {
-  inlet Sink is type OrganizationResult
+  inlet Sink is type OrganizationQueryResult
 }
 
 type OrganizationResult is one of {
